@@ -26,9 +26,9 @@ SETUP INSTRUCTIONS:
 
 // Replace these with your Google Apps Script Web App URLs
 const GOOGLE_SHEETS_CONFIG = {
-    registrationURL: 'YOUR_GOOGLE_SCRIPT_URL_HERE',
-    transportURL: 'YOUR_GOOGLE_SCRIPT_URL_HERE',
-    legalURL: 'YOUR_GOOGLE_SCRIPT_URL_HERE'
+    registrationURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec',
+    transportURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec',
+    legalURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec'
 };
 
 // Send data to Google Sheets
