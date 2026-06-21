@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>June 25th Peaceful Protest - Kenya</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <h1>🕊️ June 25 Peaceful Protest</h1>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="#register">Register</a>
+                    <a href="#transport">Transport Support</a>
+                    <a href="#legal">Legal Aid</a>
+                    <a href="#about">About</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section with Banner Carousel -->
+        <section class="hero">
+            <div class="hero-carousel">
+                <!-- Slide 1 -->
+                <div class="hero-slide active">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-banner-image" style="background-image: url('images/banner1.jpg');">
+                        <!-- Fallback gradient if no image -->
+                        <div class="hero-gradient"></div>
+                    </div>
+                    <div class="container hero-content">
+                        <h2 class="hero-title">Stand Together for Change</h2>
+                        <p class="hero-subtitle">Join us on June 25th for a peaceful demonstration in Nairobi CBD</p>
+                        <div class="hero-cta">
+                            <a href="#register" class="btn btn-hero-primary">Register Now</a>
+                            <a href="#about" class="btn btn-hero-secondary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="hero-slide">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-banner-image" style="background-image: url('images/banner2.jpg');">
+                        <div class="hero-gradient"></div>
+                    </div>
+                    <div class="container hero-content">
+                        <h2 class="hero-title">Your Voice Matters</h2>
+                        <p class="hero-subtitle">Peaceful assembly is your constitutional right - Article 37</p>
+                        <div class="hero-cta">
+                            <a href="#legal" class="btn btn-hero-primary">Know Your Rights</a>
+                            <a href="#register" class="btn btn-hero-secondary">Join Us</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="hero-slide">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-banner-image" style="background-image: url('images/banner3.jpg');">
+                        <div class="hero-gradient"></div>
+                    </div>
+                    <div class="container hero-content">
+                        <h2 class="hero-title">Free Transport Available</h2>
+                        <p class="hero-subtitle">Buses departing from Kisumu, Mombasa, Eldoret, Meru & more</p>
+                        <div class="hero-cta">
+                            <a href="#transport" class="btn btn-hero-primary">Request Transport</a>
+                            <a href="#transport" class="btn btn-hero-secondary">Support the Fund</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="hero-slide">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-banner-image" style="background-image: url('images/banner4.jpg');">
+                        <div class="hero-gradient"></div>
+                    </div>
+                    <div class="container hero-content">
+                        <h2 class="hero-title">Legal Aid 24/7</h2>
+                        <p class="hero-subtitle">Free legal support available throughout the protest</p>
+                        <div class="hero-cta">
+                            <a href="#legal" class="btn btn-hero-primary">Get Legal Aid</a>
+                            <a href="tel:0800587423" class="btn btn-hero-secondary">Call Hotline</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button class="carousel-control prev" onclick="moveSlide(-1)" aria-label="Previous slide">
+                    <span>‹</span>
+                </button>
+                <button class="carousel-control next" onclick="moveSlide(1)" aria-label="Next slide">
+                    <span>›</span>
+                </button>
+
+                <!-- Carousel Indicators -->
+                <div class="carousel-indicators">
+                    <button class="indicator active" onclick="currentSlide(0)" aria-label="Slide 1"></button>
+                    <button class="indicator" onclick="currentSlide(1)" aria-label="Slide 2"></button>
+                    <button class="indicator" onclick="currentSlide(2)" aria-label="Slide 3"></button>
+                    <button class="indicator" onclick="currentSlide(3)" aria-label="Slide 4"></button>
+                </div>
+            </div>
+
+            <!-- Stats Section (outside carousel) -->
+            <div class="hero-stats-section">
+                <div class="container">
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="registeredCount">0</span>
+                            <span class="stat-label">Registered Participants</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="fundedAmount">KSh 0</span>
+                            <span class="stat-label">Transport Fund Raised</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown Timer Section -->
+        <section class="countdown-section">
+            <div class="container">
+                <h2 class="countdown-title">Time Until We March</h2>
+                <p class="countdown-subtitle">June 25, 2026 • 8:00 AM • Nairobi CBD</p>
+
+                <div class="countdown-timer">
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-days">0</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-hours">0</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-minutes">0</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="countdown-seconds">0</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+
+                <div class="countdown-message">
+                    <p id="countdown-status">Every second counts. Register now and stand with thousands.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Important Information -->
+        <section class="info-banner">
+            <div class="container">
+                <h3>⚠️ Your Rights & Safety</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>Know Your Rights</h4>
+                        <p>The Constitution of Kenya protects peaceful assembly (Article 37). You have the right to participate peacefully.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Stay Safe</h4>
+                        <p>Remain peaceful, follow organizer instructions, stay in groups, and have emergency contacts ready.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Legal Support Ready</h4>
+                        <p>Free legal aid is available 24/7 through our partner lawyers. See Legal Aid section below.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Section -->
+        <section id="register" class="section">
+            <div class="container">
+                <h2 class="section-title">Register to Participate</h2>
+                <p class="section-subtitle">Join the peaceful march and make your voice heard</p>
+
+                <div class="form-container">
+                    <form id="registrationForm" class="main-form">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" placeholder="0712345678" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email (Optional)</label>
+                                <input type="email" id="email" name="email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Your Location/County *</label>
+                            <select id="location" name="location" required>
+                                <option value="">Select your county</option>
+                                <option value="baringo">Baringo</option>
+                                <option value="bomet">Bomet</option>
+                                <option value="bungoma">Bungoma</option>
+                                <option value="busia">Busia</option>
+                                <option value="elgeyo-marakwet">Elgeyo-Marakwet</option>
+                                <option value="embu">Embu</option>
+                                <option value="garissa">Garissa</option>
+                                <option value="homa-bay">Homa Bay</option>
+                                <option value="isiolo">Isiolo</option>
+                                <option value="kajiado">Kajiado</option>
+                                <option value="kakamega">Kakamega</option>
+                                <option value="kericho">Kericho</option>
+                                <option value="kiambu">Kiambu</option>
+                                <option value="kilifi">Kilifi</option>
+                                <option value="kirinyaga">Kirinyaga</option>
+                                <option value="kisii">Kisii</option>
+                                <option value="kisumu">Kisumu</option>
+                                <option value="kitui">Kitui</option>
+                                <option value="kwale">Kwale</option>
+                                <option value="laikipia">Laikipia</option>
+                                <option value="lamu">Lamu</option>
+                                <option value="machakos">Machakos</option>
+                                <option value="makueni">Makueni</option>
+                                <option value="mandera">Mandera</option>
+                                <option value="marsabit">Marsabit</option>
+                                <option value="meru">Meru</option>
+                                <option value="migori">Migori</option>
+                                <option value="mombasa">Mombasa</option>
+                                <option value="muranga">Murang'a</option>
+                                <option value="nairobi">Nairobi</option>
+                                <option value="nakuru">Nakuru</option>
+                                <option value="nandi">Nandi</option>
+                                <option value="narok">Narok</option>
+                                <option value="nyamira">Nyamira</option>
+                                <option value="nyandarua">Nyandarua</option>
+                                <option value="nyeri">Nyeri</option>
+                                <option value="samburu">Samburu</option>
+                                <option value="siaya">Siaya</option>
+                                <option value="taita-taveta">Taita-Taveta</option>
+                                <option value="tana-river">Tana River</option>
+                                <option value="tharaka-nithi">Tharaka-Nithi</option>
+                                <option value="trans-nzoia">Trans Nzoia</option>
+                                <option value="turkana">Turkana</option>
+                                <option value="uasin-gishu">Uasin Gishu</option>
+                                <option value="vihiga">Vihiga</option>
+                                <option value="wajir">Wajir</option>
+                                <option value="west-pokot">West Pokot</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="assemblyPoint">Preferred Assembly Point *</label>
+                            <select id="assemblyPoint" name="assemblyPoint" required>
+                                <option value="">Select assembly point</option>
+                                <option value="uhuru-park">Uhuru Park</option>
+                                <option value="jeevanjee-gardens">Jeevanjee Gardens</option>
+                                <option value="freedom-corner">Freedom Corner</option>
+                                <option value="kamukunji-grounds">Kamukunji Grounds</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="needTransport" name="needTransport">
+                                I need transportation assistance
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                I commit to peaceful, non-violent participation *
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Register for Peaceful March</button>
+                    </form>
+
+                    <div id="registrationSuccess" class="success-message" style="display: none;">
+                        <h3>✅ Registration Successful!</h3>
+                        <p>Thank you for registering. You will receive updates via SMS/Email.</p>
+                        <p><strong>Reference Number:</strong> <span id="refNumber"></span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transport Support Section -->
+        <section id="transport" class="section section-alt">
+            <div class="container">
+                <h2 class="section-title">Transportation Support</h2>
+                <p class="section-subtitle">Help fellow protesters reach Nairobi CBD safely</p>
+
+                <div class="transport-info">
+                    <div class="info-box">
+                        <h3>📍 Bus Routes & Pickup Points</h3>
+                        <ul class="route-list">
+                            <li><strong>Western Route:</strong> Kisumu → Nakuru → Nairobi (Departure: 4:00 AM)</li>
+                            <li><strong>Eastern Route:</strong> Meru → Embu → Nairobi (Departure: 5:00 AM)</li>
+                            <li><strong>Rift Valley Route:</strong> Eldoret → Nakuru → Nairobi (Departure: 4:30 AM)</li>
+                            <li><strong>Coast Route:</strong> Mombasa → Voi → Nairobi (Departure: 11:00 PM, June 24th)</li>
+                        </ul>
+                        <p class="note">All buses are free for registered participants. Limited seats available.</p>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Request Transport Assistance</h3>
+                    <form id="transportForm" class="main-form">
+                        <div class="form-group">
+                            <label for="transportName">Full Name *</label>
+                            <input type="text" id="transportName" name="transportName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transportPhone">Phone Number *</label>
+                            <input type="tel" id="transportPhone" name="transportPhone" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="departurePoint">Departure Location *</label>
+                                <input type="text" id="departurePoint" name="departurePoint" placeholder="e.g., Kisumu Bus Station" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="passengerCount">Number of Passengers *</label>
+                                <input type="number" id="passengerCount" name="passengerCount" min="1" max="10" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transportRoute">Select Route *</label>
+                            <select id="transportRoute" name="transportRoute" required>
+                                <option value="">Select your route</option>
+                                <option value="western">Western Route (Kisumu)</option>
+                                <option value="eastern">Eastern Route (Meru)</option>
+                                <option value="rift">Rift Valley Route (Eldoret)</option>
+                                <option value="coast">Coast Route (Mombasa)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Request Transport</button>
+                    </form>
+
+                    <div id="transportSuccess" class="success-message" style="display: none;">
+                        <h3>✅ Transport Request Submitted!</h3>
+                        <p>You will be contacted within 24 hours with pickup details.</p>
+                    </div>
+                </div>
+
+                <div class="donation-section">
+                    <h3>💰 Support the Transport Fund</h3>
+                    <p>Help us provide free transport for protesters from across Kenya</p>
+
+                    <div class="donation-options">
+                        <div class="mpesa-info">
+                            <h4>M-Pesa Paybill</h4>
+                            <div class="payment-details">
+                                <p><strong>Paybill Number:</strong> 400200</p>
+                                <p><strong>Account Number:</strong> JUNE25TRANSPORT</p>
+                                <p><strong>For:</strong> Transportation Support</p>
+                            </div>
+                        </div>
+                        <div class="bank-info">
+                            <h4>Bank Transfer</h4>
+                            <div class="payment-details">
+                                <p><strong>Bank:</strong> Equity Bank</p>
+                                <p><strong>Account:</strong> 0123456789</p>
+                                <p><strong>Account Name:</strong> June 25 Protest Fund</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Legal Aid Section -->
+        <section id="legal" class="section">
+            <div class="container">
+                <h2 class="section-title">Legal Aid & Support</h2>
+                <p class="section-subtitle">Free legal assistance available 24/7</p>
+
+                <div class="legal-emergency">
+                    <div class="emergency-card">
+                        <h3>🚨 Emergency Legal Hotline</h3>
+                        <p class="hotline-number">0800 JUSTICE (0800 587 8423)</p>
+                        <p>Available 24/7 on June 25th and 26th</p>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>If You're Arrested</h4>
+                        <ul>
+                            <li>Remain calm and peaceful</li>
+                            <li>Request to speak with a lawyer immediately</li>
+                            <li>Call our emergency hotline</li>
+                            <li>Do not sign any documents without legal counsel</li>
+                            <li>You have the right to remain silent</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>Your Legal Rights</h4>
+                        <ul>
+                            <li>Right to peaceful assembly (Article 37)</li>
+                            <li>Right to legal representation</li>
+                            <li>Right to be produced in court within 24 hours</li>
+                            <li>Right to humane treatment</li>
+                            <li>Right to contact family/lawyer</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h4>Legal Aid Partners</h4>
+                        <ul>
+                            <li>Katiba Institute</li>
+                            <li>Kenya Human Rights Commission</li>
+                            <li>Law Society of Kenya</li>
+                            <li>International Justice Mission</li>
+                            <li>Amnesty International Kenya</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Request Legal Assistance</h3>
+                    <form id="legalForm" class="main-form">
+                        <div class="form-group">
+                            <label for="legalName">Full Name *</label>
+                            <input type="text" id="legalName" name="legalName" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="legalPhone">Phone Number *</label>
+                                <input type="tel" id="legalPhone" name="legalPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="legalEmail">Email (Optional)</label>
+                                <input type="email" id="legalEmail" name="legalEmail">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="urgency">Urgency Level *</label>
+                            <select id="urgency" name="urgency" required>
+                                <option value="">Select urgency</option>
+                                <option value="emergency">EMERGENCY - Currently detained/arrested</option>
+                                <option value="urgent">Urgent - Need immediate advice</option>
+                                <option value="planning">Planning - Pre-protest legal consultation</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="legalIssue">Describe Your Situation *</label>
+                            <textarea id="legalIssue" name="legalIssue" rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currentLocation">Current Location (if detained)</label>
+                            <input type="text" id="currentLocation" name="currentLocation" placeholder="e.g., Central Police Station">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Request Legal Aid</button>
+                    </form>
+
+                    <div id="legalSuccess" class="success-message" style="display: none;">
+                        <h3>✅ Legal Aid Request Submitted!</h3>
+                        <p>A lawyer will contact you within 30 minutes.</p>
+                        <p><strong>Case Reference:</strong> <span id="caseRef"></span></p>
+                        <p>Emergency Hotline: <strong>0800 587 8423</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section section-alt">
+            <div class="container">
+                <h2 class="section-title">About the Protest</h2>
+                <div class="about-content">
+                    <h3>Why We March</h3>
+                    <p>On June 25th, Kenyans from all walks of life will gather peacefully in Nairobi CBD to exercise our constitutional right to peaceful assembly and make our voices heard on critical national issues affecting our nation.</p>
+
+                    <h3>Our Demands for a Better Kenya</h3>
+                    <div class="demands-grid">
+                        <div class="demand-card">
+                            <h4>1. Economic Justice & Youth Employment</h4>
+                            <ul>
+                                <li>Create 1 million jobs for young Kenyans</li>
+                                <li>Lower cost of living - reduce prices of essential goods</li>
+                                <li>Stop excessive taxation on small businesses</li>
+                                <li>Transparent use of public funds</li>
+                                <li>Support for startups and entrepreneurship</li>
+                            </ul>
+                        </div>
+
+                        <div class="demand-card">
+                            <h4>2. Good Governance & Anti-Corruption</h4>
+                            <ul>
+                                <li>Prosecute corrupt government officials</li>
+                                <li>Strengthen EACC and independent oversight bodies</li>
+                                <li>Publish all government contracts online</li>
+                                <li>End wasteful government spending</li>
+                                <li>Implement the two-thirds gender rule</li>
+                                <li>Reduce size of cabinet and government</li>
+                            </ul>
+                        </div>
+
+                        <div class="demand-card">
+                            <h4>3. Quality Education & Healthcare</h4>
+                            <ul>
+                                <li>Increase funding for public schools and universities</li>
+                                <li>Implement free primary and secondary education fully</li>
+                                <li>Improve NHIF/SHA healthcare coverage</li>
+                                <li>Hire more teachers and doctors</li>
+                                <li>Renovate dilapidated schools and hospitals</li>
+                            </ul>
+                        </div>
+
+                        <div class="demand-card">
+                            <h4>4. Police Reforms & Justice</h4>
+                            <ul>
+                                <li>End extrajudicial killings and enforced disappearances</li>
+                                <li>Police accountability and oversight</li>
+                                <li>Justice for victims of police brutality</li>
+                                <li>Independent Police Oversight Authority (IPOA) empowerment</li>
+                                <li>Community policing initiatives</li>
+                            </ul>
+                        </div>
+
+                        <div class="demand-card">
+                            <h4>5. Democracy & Constitutional Rights</h4>
+                            <ul>
+                                <li>Protect freedom of assembly and expression</li>
+                                <li>Stop harassment of protesters and activists</li>
+                                <li>Ensure free and fair elections</li>
+                                <li>Respect for judicial independence</li>
+                                <li>Full implementation of the 2010 Constitution</li>
+                            </ul>
+                        </div>
+
+                        <div class="demand-card">
+                            <h4>6. Environmental & Climate Action</h4>
+                            <ul>
+                                <li>Stop deforestation and protect water catchment areas</li>
+                                <li>Clean and safe drinking water for all</li>
+                                <li>Renewable energy investment</li>
+                                <li>Protect Nairobi's green spaces</li>
+                                <li>Climate change adaptation programs</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="manifesto-box">
+                        <h3>Our Vision</h3>
+                        <p>We envision a Kenya where every citizen has access to quality education, affordable healthcare, decent employment, and lives in dignity. A Kenya where public resources benefit the people, not a privileged few. A Kenya where the rule of law prevails and constitutional rights are respected. A Kenya where young people have hope and opportunity.</p>
+                        <p><strong>This is not a political movement. This is a people's movement for a better Kenya.</strong></p>
+                    </div>
+
+                    <h3>Our Commitment to Peace</h3>
+                    <p>This is a strictly peaceful demonstration. We are committed to non-violence and respect for all persons and property. Any acts of violence or destruction do not represent our movement. We will exercise our constitutional rights with dignity and discipline.</p>
+
+                    <h3>Code of Conduct</h3>
+                    <ul>
+                        <li>Remain peaceful and non-violent at all times</li>
+                        <li>Respect law enforcement officers</li>
+                        <li>Do not damage property - public or private</li>
+                        <li>Stay together in groups for safety</li>
+                        <li>Follow instructions from protest organizers</li>
+                        <li>Help fellow protesters in need</li>
+                        <li>No alcohol or drugs during the march</li>
+                        <li>Respect all Kenyans regardless of political affiliation</li>
+                    </ul>
+
+                    <h3>Historical Context</h3>
+                    <p>This movement builds on Kenya's rich history of peaceful mass action - from the independence struggle to the fight for multiparty democracy in the 1990s, to the successful resistance against oppressive taxation in 2024. When united, Kenyan citizens have the power to demand accountability and drive positive change.</p>
+
+                    <h3>Contact & Information</h3>
+                    <p>For media inquiries: media@june25kenya.org</p>
+                    <p>For general questions: info@june25kenya.org</p>
+                    <p>WhatsApp Updates: +254 712 345 678</p>
+                    <p>Twitter/X: @June25Kenya</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 June 25 Peaceful Protest Movement</p>
+            <p>Stand together. March peacefully. Demand change.</p>
+        </div>
+    </footer>
+
+    <script src="google-sheets-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

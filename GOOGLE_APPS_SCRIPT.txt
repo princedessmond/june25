@@ -1,0 +1,125 @@
+/*
+===========================================
+GOOGLE APPS SCRIPT CODE
+===========================================
+
+INSTRUCTIONS:
+1. Open your Google Spreadsheet
+2. Go to Extensions → Apps Script
+3. Delete all existing code
+4. Copy and paste this ENTIRE code below
+5. Click Save (disk icon)
+6. Click Deploy → New Deployment
+7. Click "Select type" → Choose "Web app"
+8. Settings:
+   - Description: "June 25 Protest Form Handler"
+   - Execute as: "Me"
+   - Who has access: "Anyone"
+9. Click "Deploy"
+10. Copy the Web App URL
+11. Paste the URL into google-sheets-config.js
+
+*/
+
+// ========================================
+// PASTE THIS CODE INTO GOOGLE APPS SCRIPT
+// ========================================
+
+function doPost(e) {
+  try {
+    // Parse the incoming data
+    var data = JSON.parse(e.postData.contents);
+
+    // Get the spreadsheet
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Determine which sheet to use based on data type
+    var sheetName;
+    if (data.id && data.id.startsWith('REG')) {
+      sheetName = 'Registrations';
+    } else if (data.id && data.id.startsWith('TRN')) {
+      sheetName = 'Transport Requests';
+    } else if (data.id && data.id.startsWith('LEG')) {
+      sheetName = 'Legal Aid Requests';
+    } else {
+      sheetName = 'Registrations'; // Default
+    }
+
+    var sheet = spreadsheet.getSheetByName(sheetName);
+
+    // If sheet doesn't exist, create it
+    if (!sheet) {
+      sheet = spreadsheet.insertSheet(sheetName);
+
+      // Add headers based on sheet type
+      if (sheetName === 'Registrations') {
+        sheet.appendRow(['Timestamp', 'Reference ID', 'Full Name', 'Phone', 'Email', 'County', 'Assembly Point', 'Need Transport']);
+      } else if (sheetName === 'Transport Requests') {
+        sheet.appendRow(['Timestamp', 'Reference ID', 'Name', 'Phone', 'Departure Point', 'Passenger Count', 'Route']);
+      } else if (sheetName === 'Legal Aid Requests') {
+        sheet.appendRow(['Timestamp', 'Case Reference', 'Name', 'Phone', 'Email', 'Urgency', 'Issue Description', 'Current Location']);
+      }
+    }
+
+    // Add the data as a new row
+    var rowData = [];
+
+    if (sheetName === 'Registrations') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.fullName,
+        data.phone,
+        data.email || '',
+        data.location,
+        data.assemblyPoint,
+        data.needTransport ? 'Yes' : 'No'
+      ];
+    } else if (sheetName === 'Transport Requests') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.name,
+        data.phone,
+        data.departurePoint,
+        data.passengerCount,
+        data.route
+      ];
+    } else if (sheetName === 'Legal Aid Requests') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.name,
+        data.phone,
+        data.email || '',
+        data.urgency,
+        data.issue,
+        data.location || ''
+      ];
+    }
+
+    sheet.appendRow(rowData);
+
+    // Return success
+    return ContentService
+      .createTextOutput(JSON.stringify({ 'result': 'success', 'row': sheet.getLastRow() }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    // Return error
+    return ContentService
+      .createTextOutput(JSON.stringify({ 'result': 'error', 'error': error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Test function to verify setup
+function testSetup() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  Logger.log('Spreadsheet name: ' + spreadsheet.getName());
+  Logger.log('Setup successful!');
+}
+
+// ========================================
+// END OF GOOGLE APPS SCRIPT CODE
+// ========================================
