@@ -732,24 +732,32 @@ document.getElementById('detectLocationBtn').addEventListener('click', function(
         (error) => {
             btn.classList.remove('detecting');
             let errorMessage = '';
+            let helpText = '';
 
             switch(error.code) {
                 case error.PERMISSION_DENIED:
-                    errorMessage = '❌ Location permission denied. Please enable GPS in your browser.';
+                    errorMessage = '❌ Location permission denied';
+                    helpText = 'To enable: Tap the lock/info icon in your browser address bar, then allow location access. Or manually enter your location below.';
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    errorMessage = '❌ Location unavailable. Please check your GPS settings.';
+                    errorMessage = '❌ Location unavailable';
+                    helpText = 'Please check that GPS is enabled in your device settings, or manually enter your location below.';
                     break;
                 case error.TIMEOUT:
-                    errorMessage = '❌ Location request timed out. Please try again.';
+                    errorMessage = '❌ Location request timed out';
+                    helpText = 'GPS signal might be weak. Please try again or manually enter your location below.';
                     break;
                 default:
-                    errorMessage = '❌ Unknown error getting location.';
+                    errorMessage = '❌ Could not get location';
+                    helpText = 'Please manually enter your location below.';
             }
 
-            statusEl.textContent = errorMessage;
+            statusEl.innerHTML = `<strong>${errorMessage}</strong><br><small>${helpText}</small>`;
             statusEl.className = 'gps-status active error';
-            btn.textContent = '📍 Use My Current Location (GPS)';
+            btn.textContent = '📍 Try GPS Again';
+
+            // Log error for debugging
+            console.error('Geolocation error:', error);
         },
         {
             enableHighAccuracy: true,
