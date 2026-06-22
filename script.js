@@ -1107,6 +1107,9 @@ const galleryImages = [
 ];
 
 let currentImageIndex = 0;
+let galleryAutoScrollInterval = null;
+let isGalleryHovered = false;
+let userHasScrolled = false;
 
 // Smooth horizontal scroll for gallery
 function scrollGallery(direction) {
@@ -1124,7 +1127,88 @@ function scrollGallery(direction) {
             behavior: 'smooth'
         });
     }
+
+    // Reset auto-scroll when user manually scrolls
+    userHasScrolled = true;
+    resetGalleryAutoScroll();
 }
+
+// Auto-scroll gallery function
+function autoScrollGallery() {
+    const gallery = document.getElementById('memorialGallery');
+
+    if (!gallery || isGalleryHovered || userHasScrolled) {
+        return;
+    }
+
+    const maxScroll = gallery.scrollWidth - gallery.clientWidth;
+    const currentScroll = gallery.scrollLeft;
+
+    // If we've reached the end, loop back to the beginning
+    if (currentScroll >= maxScroll - 10) {
+        gallery.scrollTo({
+            left: 0,
+            behavior: 'smooth'
+        });
+    } else {
+        // Scroll slowly to the right (one card at a time)
+        gallery.scrollBy({
+            left: 420, // Scroll by one card width + gap
+            behavior: 'smooth'
+        });
+    }
+}
+
+// Initialize auto-scroll for gallery
+function initGalleryAutoScroll() {
+    const gallery = document.getElementById('memorialGallery');
+
+    if (!gallery) return;
+
+    // Start auto-scrolling every 4 seconds
+    galleryAutoScrollInterval = setInterval(autoScrollGallery, 4000);
+
+    // Pause auto-scroll on hover
+    gallery.addEventListener('mouseenter', () => {
+        isGalleryHovered = true;
+    });
+
+    gallery.addEventListener('mouseleave', () => {
+        isGalleryHovered = false;
+    });
+
+    // Detect manual scroll by user
+    gallery.addEventListener('scroll', () => {
+        // This gets called during auto-scroll too, but we only care about manual scrolls
+        // We'll reset the interval to give smooth experience
+    }, { passive: true });
+
+    // Pause on touch (mobile)
+    gallery.addEventListener('touchstart', () => {
+        userHasScrolled = true;
+        clearInterval(galleryAutoScrollInterval);
+    }, { passive: true });
+}
+
+// Reset auto-scroll timer
+function resetGalleryAutoScroll() {
+    if (galleryAutoScrollInterval) {
+        clearInterval(galleryAutoScrollInterval);
+    }
+    // Resume auto-scroll after 10 seconds of inactivity
+    setTimeout(() => {
+        userHasScrolled = false;
+        if (!galleryAutoScrollInterval) {
+            galleryAutoScrollInterval = setInterval(autoScrollGallery, 4000);
+        }
+    }, 10000);
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize gallery auto-scroll with a slight delay
+    setTimeout(initGalleryAutoScroll, 2000);
+});
 
 // Open lightbox with specific image
 function openLightbox(index) {
