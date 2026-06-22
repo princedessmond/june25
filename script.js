@@ -886,9 +886,9 @@ document.getElementById('policeReportForm').addEventListener('submit', async fun
         vehicleCount: document.getElementById('vehicleCount').value,
         description: document.getElementById('alertDescription').value,
         reporterContact: document.getElementById('reporterContact').value,
-        latitude: document.getElementById('latitude').value || null,
-        longitude: document.getElementById('longitude').value || null,
-        gpsAccuracy: document.getElementById('gpsAccuracy').value || null
+        latitude: document.getElementById('latitude').value || '',
+        longitude: document.getElementById('longitude').value || '',
+        gpsAccuracy: document.getElementById('gpsAccuracy').value || ''
     };
 
     // Save to localStorage
