@@ -1,0 +1,92 @@
+/*
+===========================================
+TEST FUNCTION FOR GOOGLE APPS SCRIPT
+===========================================
+
+HOW TO USE:
+1. Open your Google Spreadsheet
+2. Go to Extensions → Apps Script
+3. Scroll to the bottom of your script
+4. Paste this function BELOW your existing doPost function
+5. Click Save (disk icon)
+6. Select "testPoliceAlert" from the function dropdown
+7. Click Run (▶️ play button)
+8. Check your "Police Alerts" sheet for new data
+9. Check View → Logs for any error messages
+
+*/
+
+function testPoliceAlert() {
+  Logger.log('🧪 Testing Police Alert submission...');
+
+  var testData = {
+    postData: {
+      contents: JSON.stringify({
+        id: 'POL' + Date.now(),
+        timestamp: new Date().toISOString(),
+        county: 'nairobi',
+        specificLocation: 'Uhuru Park - APPS SCRIPT TEST',
+        activityType: 'large-deployment',
+        officerCount: '20-50',
+        vehicleCount: '5-10',
+        description: 'TEST from Google Apps Script Editor - Please ignore',
+        reporterContact: '0712345678',
+        latitude: '-1.2864',
+        longitude: '36.8172',
+        gpsAccuracy: '50'
+      })
+    }
+  };
+
+  Logger.log('📤 Sending test data...');
+
+  try {
+    var result = doPost(testData);
+    var response = JSON.parse(result.getContent());
+
+    Logger.log('✅ Test completed!');
+    Logger.log('📊 Result: ' + JSON.stringify(response));
+
+    if (response.result === 'success') {
+      Logger.log('🎉 SUCCESS! Data was added to row: ' + response.row);
+      Logger.log('📋 Check your "Police Alerts" sheet now!');
+    } else {
+      Logger.log('❌ ERROR: ' + response.error);
+    }
+  } catch (error) {
+    Logger.log('❌ TEST FAILED: ' + error.toString());
+    Logger.log('💡 Check that:');
+    Logger.log('   1. The doPost function exists above this test function');
+    Logger.log('   2. The "Police Alerts" sheet exists in your spreadsheet');
+    Logger.log('   3. You have edit permissions on this spreadsheet');
+  }
+}
+
+/*
+===========================================
+EXPECTED OUTPUT IN LOGS:
+===========================================
+
+🧪 Testing Police Alert submission...
+📤 Sending test data...
+✅ Test completed!
+📊 Result: {"result":"success","row":2}
+🎉 SUCCESS! Data was added to row: 2
+📋 Check your "Police Alerts" sheet now!
+
+===========================================
+IF YOU SEE THE SUCCESS MESSAGE:
+===========================================
+
+Your Apps Script is working correctly!
+
+Next step: Deploy it as a Web App
+1. Click Deploy → New deployment
+2. Select type: Web app
+3. Execute as: Me
+4. Who has access: Anyone
+5. Click Deploy
+6. Copy the Web App URL
+7. Update google-sheets-config.js with this URL
+
+*/
