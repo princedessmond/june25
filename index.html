@@ -8,6 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Leaflet.js for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Leaflet.heat for Heatmap -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 </head>
 <body>
     <header>
@@ -196,10 +203,37 @@
                 <h2 class="section-title">🚨 Police Presence Alerts</h2>
                 <p class="section-subtitle">Report and view real-time police activity to stay safe during the protest</p>
 
+                <!-- Interactive Map -->
+                <div class="police-map-container">
+                    <div id="policeMap" class="police-map"></div>
+                    <div class="map-legend">
+                        <h4>Map Legend:</h4>
+                        <div class="map-legend-items">
+                            <span class="legend-marker danger">🔴 High Alert</span>
+                            <span class="legend-marker warning">🟠 Warning</span>
+                            <span class="legend-marker info">🔵 Moderate</span>
+                            <span class="legend-marker safe">🟢 Safe</span>
+                            <span class="legend-marker user">📍 Your Location</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="alert-system-grid">
                     <!-- Report Form (Left Side) -->
                     <div class="alert-report-form">
                         <h3>Report Police Activity</h3>
+
+                        <!-- GPS Location Detection -->
+                        <div class="gps-detection">
+                            <button type="button" id="detectLocationBtn" class="btn btn-gps">
+                                📍 Use My Current Location (GPS)
+                            </button>
+                            <div id="gpsStatus" class="gps-status"></div>
+                            <input type="hidden" id="latitude" name="latitude">
+                            <input type="hidden" id="longitude" name="longitude">
+                            <input type="hidden" id="gpsAccuracy" name="gpsAccuracy">
+                        </div>
+
                         <form id="policeReportForm" class="main-form">
                             <div class="form-group">
                                 <label for="alertCounty">County/Location *</label>

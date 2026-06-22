@@ -606,8 +606,263 @@ console.log('- exportRegistrations() : Export all data');
 console.log('%cNote: In production, these would require authentication', 'color: #d32f2f;');
 
 // ============================================
-// POLICE ALERT SYSTEM
+// POLICE ALERT SYSTEM WITH GPS & MAP
 // ============================================
+
+// Initialize Map
+let policeMap;
+let userMarker;
+let alertMarkers = [];
+let heatmapLayer;
+
+function initializePoliceMap() {
+    // Center on Kenya (Nairobi)
+    const kenyaCenter = [-1.2921, 36.8219];
+
+    // Initialize map
+    policeMap = L.map('policeMap').setView(kenyaCenter, 12);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(policeMap);
+
+    // Initialize heatmap layer
+    heatmapLayer = L.heatLayer([], {
+        radius: 25,
+        blur: 35,
+        maxZoom: 17,
+        gradient: {
+            0.0: '#4caf50',  // Green (safe)
+            0.3: '#2196f3',  // Blue (info)
+            0.6: '#ff9800',  // Orange (warning)
+            1.0: '#f44336'   // Red (danger)
+        }
+    }).addTo(policeMap);
+
+    // Load and display existing alerts on map
+    loadAlertsOnMap();
+
+    // Try to get user's location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                // Add user location marker
+                userMarker = L.marker([userLat, userLng], {
+                    icon: L.divIcon({
+                        html: '📍',
+                        className: 'user-location-marker',
+                        iconSize: [30, 30]
+                    })
+                }).addTo(policeMap);
+
+                userMarker.bindPopup('Your Current Location').openPopup();
+
+                // Center map on user's location
+                policeMap.setView([userLat, userLng], 13);
+            },
+            (error) => {
+                console.log('Geolocation not available:', error);
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    }
+}
+
+// GPS Location Detection
+document.getElementById('detectLocationBtn').addEventListener('click', function() {
+    const btn = this;
+    const statusEl = document.getElementById('gpsStatus');
+
+    if (!navigator.geolocation) {
+        statusEl.textContent = '❌ GPS not supported on this device';
+        statusEl.className = 'gps-status active error';
+        return;
+    }
+
+    // Show loading state
+    btn.classList.add('detecting');
+    btn.textContent = '⏳ Detecting location...';
+    statusEl.textContent = 'Getting your GPS coordinates...';
+    statusEl.className = 'gps-status active loading';
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = Math.round(position.coords.accuracy);
+
+            // Store coordinates
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+            document.getElementById('gpsAccuracy').value = accuracy;
+
+            // Update button state
+            btn.classList.remove('detecting');
+            btn.classList.add('detected');
+            btn.textContent = '✅ Location Detected!';
+
+            // Show success message
+            statusEl.textContent = `✓ Location captured! (Accuracy: ±${accuracy}m)`;
+            statusEl.className = 'gps-status active success';
+
+            // Reverse geocode to get address (simplified - uses coordinates)
+            reverseGeocode(lat, lng);
+
+            // Add/update marker on map
+            if (userMarker) {
+                userMarker.setLatLng([lat, lng]);
+            } else {
+                userMarker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: '📍',
+                        className: 'user-location-marker',
+                        iconSize: [30, 30]
+                    })
+                }).addTo(policeMap);
+            }
+
+            userMarker.bindPopup('Your Current Location').openPopup();
+            policeMap.setView([lat, lng], 15);
+        },
+        (error) => {
+            btn.classList.remove('detecting');
+            let errorMessage = '';
+
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = '❌ Location permission denied. Please enable GPS in your browser.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = '❌ Location unavailable. Please check your GPS settings.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = '❌ Location request timed out. Please try again.';
+                    break;
+                default:
+                    errorMessage = '❌ Unknown error getting location.';
+            }
+
+            statusEl.textContent = errorMessage;
+            statusEl.className = 'gps-status active error';
+            btn.textContent = '📍 Use My Current Location (GPS)';
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+    );
+});
+
+// Simple reverse geocoding (determines county from coordinates)
+function reverseGeocode(lat, lng) {
+    // Kenyan county approximate centers (simplified mapping)
+    const kenyaCounties = {
+        'nairobi': { lat: -1.2921, lng: 36.8219 },
+        'mombasa': { lat: -4.0435, lng: 39.6682 },
+        'kisumu': { lat: -0.0917, lng: 34.7680 },
+        'nakuru': { lat: -0.3031, lng: 36.0800 },
+        'eldoret': { lat: 0.5143, lng: 35.2698 },
+        'meru': { lat: 0.0469, lng: 37.6556 },
+        'nyeri': { lat: -0.4194, lng: 36.9472 },
+        'thika': { lat: -1.0332, lng: 37.0693 },
+        'machakos': { lat: -1.5177, lng: 37.2634 },
+        'kakamega': { lat: 0.2827, lng: 34.7519 }
+    };
+
+    // Find closest county
+    let closestCounty = 'nairobi';
+    let minDistance = Infinity;
+
+    for (const [county, coords] of Object.entries(kenyaCounties)) {
+        const distance = Math.sqrt(
+            Math.pow(lat - coords.lat, 2) + Math.pow(lng - coords.lng, 2)
+        );
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestCounty = county;
+        }
+    }
+
+    // Auto-select county
+    document.getElementById('alertCounty').value = closestCounty;
+}
+
+// Load existing alerts on map
+function loadAlertsOnMap() {
+    const alerts = getPoliceAlerts();
+    const heatmapData = [];
+
+    alerts.forEach(alert => {
+        if (alert.latitude && alert.longitude) {
+            const marker = createMapMarker(alert);
+            alertMarkers.push(marker);
+
+            // Add to heatmap with severity weighting
+            const intensity = getSeverityIntensity(alert.activityType);
+            heatmapData.push([alert.latitude, alert.longitude, intensity]);
+        }
+    });
+
+    // Update heatmap
+    if (heatmapData.length > 0) {
+        heatmapLayer.setLatLngs(heatmapData);
+    }
+}
+
+// Create map marker for alert
+function createMapMarker(alert) {
+    const markerColor = getMarkerColor(alert.activityType);
+    const icon = L.divIcon({
+        html: markerColor,
+        className: 'alert-map-marker',
+        iconSize: [20, 20]
+    });
+
+    const marker = L.marker([alert.latitude, alert.longitude], { icon })
+        .addTo(policeMap);
+
+    // Popup content
+    const popupContent = `
+        <div class="map-popup">
+            <strong>${formatActivityType(alert.activityType)}</strong><br>
+            <em>${alert.county} - ${alert.specificLocation}</em><br>
+            <small>${getTimeAgo(alert.timestamp)}</small>
+        </div>
+    `;
+
+    marker.bindPopup(popupContent);
+    return marker;
+}
+
+// Get marker color based on activity type
+function getMarkerColor(activityType) {
+    const dangerTypes = ['teargas', 'arrests', 'dispersal'];
+    const warningTypes = ['large-deployment'];
+    const safeTypes = ['peaceful'];
+
+    if (dangerTypes.includes(activityType)) return '🔴';
+    if (warningTypes.includes(activityType)) return '🟠';
+    if (safeTypes.includes(activityType)) return '🟢';
+    return '🔵';
+}
+
+// Get severity intensity for heatmap
+function getSeverityIntensity(activityType) {
+    const dangerTypes = ['teargas', 'arrests', 'dispersal'];
+    const warningTypes = ['large-deployment'];
+    const safeTypes = ['peaceful'];
+
+    if (dangerTypes.includes(activityType)) return 1.0;
+    if (warningTypes.includes(activityType)) return 0.7;
+    if (safeTypes.includes(activityType)) return 0.3;
+    return 0.5;
+}
 
 // Police Alert Form Submission
 document.getElementById('policeReportForm').addEventListener('submit', async function(e) {
@@ -622,7 +877,10 @@ document.getElementById('policeReportForm').addEventListener('submit', async fun
         officerCount: document.getElementById('officerCount').value,
         vehicleCount: document.getElementById('vehicleCount').value,
         description: document.getElementById('alertDescription').value,
-        reporterContact: document.getElementById('reporterContact').value
+        reporterContact: document.getElementById('reporterContact').value,
+        latitude: document.getElementById('latitude').value || null,
+        longitude: document.getElementById('longitude').value || null,
+        gpsAccuracy: document.getElementById('gpsAccuracy').value || null
     };
 
     // Save to localStorage
@@ -640,6 +898,22 @@ document.getElementById('policeReportForm').addEventListener('submit', async fun
 
     // Add to live feed immediately
     addAlertToFeed(formData);
+
+    // Add to map if has coordinates
+    if (formData.latitude && formData.longitude) {
+        const marker = createMapMarker(formData);
+        alertMarkers.push(marker);
+
+        // Update heatmap
+        const alerts = getPoliceAlerts();
+        const heatmapData = alerts
+            .filter(a => a.latitude && a.longitude)
+            .map(a => [a.latitude, a.longitude, getSeverityIntensity(a.activityType)]);
+        heatmapLayer.setLatLngs(heatmapData);
+
+        // Pan map to new alert
+        policeMap.setView([formData.latitude, formData.longitude], 15);
+    }
 
     // Reset form and show it again after 3 seconds
     setTimeout(() => {
@@ -813,4 +1087,7 @@ setInterval(() => {
 document.addEventListener('DOMContentLoaded', function() {
     // Slight delay to ensure HTML is fully rendered
     setTimeout(loadRecentAlerts, 100);
+
+    // Initialize map
+    setTimeout(initializePoliceMap, 200);
 });

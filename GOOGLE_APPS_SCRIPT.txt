@@ -61,7 +61,7 @@ function doPost(e) {
       } else if (sheetName === 'Legal Aid Requests') {
         sheet.appendRow(['Timestamp', 'Case Reference', 'Name', 'Phone', 'Email', 'Urgency', 'Issue Description', 'Current Location']);
       } else if (sheetName === 'Police Alerts') {
-        sheet.appendRow(['Timestamp', 'Alert ID', 'County', 'Specific Location', 'Activity Type', 'Officer Count', 'Vehicle Count', 'Description', 'Reporter Contact']);
+        sheet.appendRow(['Timestamp', 'Alert ID', 'County', 'Specific Location', 'Activity Type', 'Officer Count', 'Vehicle Count', 'Description', 'Reporter Contact', 'Latitude', 'Longitude', 'GPS Accuracy']);
       }
     }
 
@@ -110,7 +110,10 @@ function doPost(e) {
         data.officerCount || '',
         data.vehicleCount || '',
         data.description || '',
-        data.reporterContact || ''
+        data.reporterContact || '',
+        data.latitude || '',
+        data.longitude || '',
+        data.gpsAccuracy || ''
       ];
     }
 
