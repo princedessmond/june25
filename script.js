@@ -895,8 +895,19 @@ document.getElementById('policeReportForm').addEventListener('submit', async fun
     savePoliceAlert(formData);
 
     // Send to Google Sheets
+    console.log('📤 Sending police alert to Google Sheets...');
+    console.log('Data to send:', formData);
+
     if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.policeAlertURL) {
-        await sendToGoogleSheets(GOOGLE_SHEETS_CONFIG.policeAlertURL, formData);
+        console.log('Google Sheets URL:', GOOGLE_SHEETS_CONFIG.policeAlertURL);
+        try {
+            await sendToGoogleSheets(GOOGLE_SHEETS_CONFIG.policeAlertURL, formData);
+            console.log('✅ Data sent successfully to Google Sheets');
+        } catch (error) {
+            console.error('❌ Error sending to Google Sheets:', error);
+        }
+    } else {
+        console.error('❌ Google Sheets config not found or URL missing');
     }
 
     // Show success message
