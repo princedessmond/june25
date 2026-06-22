@@ -795,6 +795,22 @@ body {
     border-radius: 8px;
 }
 
+.mpesa-info.mpesa-only {
+    background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+    color: var(--white);
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(30, 126, 52, 0.3);
+}
+
+.mpesa-info.mpesa-only h4 {
+    color: var(--white);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 0.8rem;
+}
+
 .mpesa-info h4,
 .bank-info h4 {
     color: var(--primary-color);
@@ -805,6 +821,58 @@ body {
 .payment-details p {
     margin: 0.5rem 0;
     font-size: 1rem;
+}
+
+.mpesa-number-highlight {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    margin: 1rem 0;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.number-large {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-top: 0.5rem;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mpesa-instructions {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+}
+
+.mpesa-instructions p {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.mpesa-instructions ol {
+    margin: 1rem 0 0 1.5rem;
+    padding: 0;
+}
+
+.mpesa-instructions li {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+.donation-note {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(30, 126, 52, 0.1);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 6px;
+    color: var(--text-dark);
+    font-size: 0.95rem;
 }
 
 .payment-details strong {
@@ -2212,5 +2280,32 @@ footer p {
 
     .lightbox-next {
         right: 10px;
+    }
+
+    /* M-Pesa Donation Section Mobile */
+    .donation-section {
+        padding: 1.5rem;
+    }
+
+    .mpesa-info.mpesa-only {
+        padding: 1.5rem;
+    }
+
+    .number-large {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .mpesa-instructions {
+        padding: 1rem;
+    }
+
+    .mpesa-instructions ol {
+        margin-left: 1rem;
+    }
+
+    .donation-note {
+        font-size: 0.85rem;
+        padding: 0.8rem;
     }
 }
