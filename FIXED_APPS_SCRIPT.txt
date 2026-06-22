@@ -1,0 +1,251 @@
+// ========================================
+// FIXED GOOGLE APPS SCRIPT CODE
+// This version ensures headers are always in row 1
+// and data starts from row 2
+// ========================================
+
+function doPost(e) {
+  try {
+    // Parse the incoming data
+    var data = JSON.parse(e.postData.contents);
+
+    // Log the received data for debugging
+    Logger.log('Received data: ' + JSON.stringify(data));
+    Logger.log('Data ID: ' + data.id);
+
+    // Get the spreadsheet
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Determine which sheet to use based on data type
+    var sheetName;
+    if (data.id && data.id.startsWith('REG')) {
+      sheetName = 'Registrations';
+    } else if (data.id && data.id.startsWith('TRN')) {
+      sheetName = 'Transport Requests';
+    } else if (data.id && data.id.startsWith('LEG')) {
+      sheetName = 'Legal Aid Requests';
+    } else if (data.id && data.id.startsWith('POL')) {
+      sheetName = 'Police Alerts';
+    } else {
+      sheetName = 'Registrations'; // Default
+    }
+
+    Logger.log('Target sheet: ' + sheetName);
+
+    var sheet = spreadsheet.getSheetByName(sheetName);
+
+    // If sheet doesn't exist, create it
+    if (!sheet) {
+      sheet = spreadsheet.insertSheet(sheetName);
+      Logger.log('Created new sheet: ' + sheetName);
+    }
+
+    // Check if headers exist (row 1 should have content)
+    var firstRow = sheet.getRange(1, 1, 1, 12).getValues()[0];
+    var hasHeaders = firstRow.join('').length > 0;
+
+    if (!hasHeaders) {
+      Logger.log('No headers found, adding headers...');
+
+      // Add headers based on sheet type
+      if (sheetName === 'Registrations') {
+        sheet.getRange(1, 1, 1, 8).setValues([
+          ['Timestamp', 'Reference ID', 'Full Name', 'Phone', 'Email', 'County', 'Assembly Point', 'Need Transport']
+        ]);
+      } else if (sheetName === 'Transport Requests') {
+        sheet.getRange(1, 1, 1, 7).setValues([
+          ['Timestamp', 'Reference ID', 'Name', 'Phone', 'Departure Point', 'Passenger Count', 'Route']
+        ]);
+      } else if (sheetName === 'Legal Aid Requests') {
+        sheet.getRange(1, 1, 1, 8).setValues([
+          ['Timestamp', 'Case Reference', 'Name', 'Phone', 'Email', 'Urgency', 'Issue Description', 'Current Location']
+        ]);
+      } else if (sheetName === 'Police Alerts') {
+        sheet.getRange(1, 1, 1, 12).setValues([
+          ['Timestamp', 'Alert ID', 'County', 'Specific Location', 'Activity Type', 'Officer Count', 'Vehicle Count', 'Description', 'Reporter Contact', 'Latitude', 'Longitude', 'GPS Accuracy']
+        ]);
+      }
+
+      // Format header row
+      var headerRange = sheet.getRange(1, 1, 1, 12);
+      headerRange.setFontWeight('bold');
+      headerRange.setBackground('#4285f4');
+      headerRange.setFontColor('#ffffff');
+    }
+
+    // Prepare the data row
+    var rowData = [];
+
+    if (sheetName === 'Registrations') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.fullName || '',
+        data.phone || '',
+        data.email || '',
+        data.location || '',
+        data.assemblyPoint || '',
+        data.needTransport ? 'Yes' : 'No'
+      ];
+    } else if (sheetName === 'Transport Requests') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.name || '',
+        data.phone || '',
+        data.departurePoint || '',
+        data.passengerCount || '',
+        data.route || ''
+      ];
+    } else if (sheetName === 'Legal Aid Requests') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.name || '',
+        data.phone || '',
+        data.email || '',
+        data.urgency || '',
+        data.issue || '',
+        data.location || ''
+      ];
+    } else if (sheetName === 'Police Alerts') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.county || '',
+        data.specificLocation || '',
+        data.activityType || '',
+        data.officerCount || '',
+        data.vehicleCount || '',
+        data.description || '',
+        data.reporterContact || '',
+        data.latitude || '',
+        data.longitude || '',
+        data.gpsAccuracy || ''
+      ];
+    }
+
+    // Log the row data before adding
+    Logger.log('Row data to add: ' + JSON.stringify(rowData));
+
+    // Add the row to the sheet
+    sheet.appendRow(rowData);
+
+    var lastRow = sheet.getLastRow();
+    Logger.log('Data added to row: ' + lastRow);
+
+    // Return success
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        'result': 'success',
+        'row': lastRow,
+        'sheet': sheetName,
+        'id': data.id
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    // Log the error
+    Logger.log('ERROR: ' + error.toString());
+
+    // Return error
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        'result': 'error',
+        'error': error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Test function for police alerts
+function testPoliceAlert() {
+  Logger.log('=== Starting Police Alert Test ===');
+
+  var testData = {
+    postData: {
+      contents: JSON.stringify({
+        id: 'POL' + Date.now(),
+        timestamp: new Date().toISOString(),
+        county: 'nairobi',
+        specificLocation: 'Uhuru Park - TEST FROM APPS SCRIPT',
+        activityType: 'large-deployment',
+        officerCount: '20-50',
+        vehicleCount: '5-10',
+        description: 'Test submission from Google Apps Script',
+        reporterContact: '0712345678',
+        latitude: '-1.2864',
+        longitude: '36.8172',
+        gpsAccuracy: '50'
+      })
+    }
+  };
+
+  var result = doPost(testData);
+  var response = JSON.parse(result.getContent());
+
+  Logger.log('=== Test Result ===');
+  Logger.log(JSON.stringify(response, null, 2));
+
+  if (response.result === 'success') {
+    Logger.log('✅ SUCCESS! Check the "Police Alerts" sheet');
+  } else {
+    Logger.log('❌ FAILED: ' + response.error);
+  }
+}
+
+// Function to clean up and reset Police Alerts sheet
+function resetPoliceAlertsSheet() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName('Police Alerts');
+
+  if (sheet) {
+    // Clear all content
+    sheet.clear();
+
+    // Add headers
+    sheet.getRange(1, 1, 1, 12).setValues([
+      ['Timestamp', 'Alert ID', 'County', 'Specific Location', 'Activity Type', 'Officer Count', 'Vehicle Count', 'Description', 'Reporter Contact', 'Latitude', 'Longitude', 'GPS Accuracy']
+    ]);
+
+    // Format headers
+    var headerRange = sheet.getRange(1, 1, 1, 12);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#4285f4');
+    headerRange.setFontColor('#ffffff');
+
+    Logger.log('✅ Police Alerts sheet reset with headers in row 1');
+  } else {
+    Logger.log('❌ Police Alerts sheet not found');
+  }
+}
+
+// ========================================
+// END OF CODE
+// ========================================
+
+/*
+INSTRUCTIONS:
+
+1. Copy this ENTIRE code
+2. Go to Extensions → Apps Script in your spreadsheet
+3. DELETE all existing code
+4. PASTE this code
+5. Click Save
+6. Run the function: resetPoliceAlertsSheet
+   - Select it from the dropdown
+   - Click Run
+   - This will clean the sheet and add proper headers
+7. Then update deployment:
+   - Deploy → Manage deployments
+   - Click Edit (✏️)
+   - Select "New version"
+   - Click Deploy
+8. Test from your website!
+
+The resetPoliceAlertsSheet function will:
+- Clear all existing data
+- Add headers in row 1
+- Format them nicely (blue background, white text)
+- Ensure new data starts from row 2
+*/
