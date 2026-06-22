@@ -736,20 +736,20 @@ document.getElementById('detectLocationBtn').addEventListener('click', function(
 
             switch(error.code) {
                 case error.PERMISSION_DENIED:
-                    errorMessage = '❌ Location permission denied';
-                    helpText = 'To enable: Tap the lock/info icon in your browser address bar, then allow location access. Or manually enter your location below.';
+                    errorMessage = '📍 GPS not available';
+                    helpText = 'No worries! Simply select your county and enter the street name below. GPS is optional.';
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    errorMessage = '❌ Location unavailable';
-                    helpText = 'Please check that GPS is enabled in your device settings, or manually enter your location below.';
+                    errorMessage = '📍 GPS unavailable';
+                    helpText = 'Please manually enter your county and location below. Your report will still be submitted successfully.';
                     break;
                 case error.TIMEOUT:
-                    errorMessage = '❌ Location request timed out';
-                    helpText = 'GPS signal might be weak. Please try again or manually enter your location below.';
+                    errorMessage = '📍 GPS timeout';
+                    helpText = 'No problem! Just fill in the county and street name below to continue.';
                     break;
                 default:
-                    errorMessage = '❌ Could not get location';
-                    helpText = 'Please manually enter your location below.';
+                    errorMessage = '📍 GPS optional';
+                    helpText = 'Select your county and enter the location below.';
             }
 
             statusEl.innerHTML = `<strong>${errorMessage}</strong><br><small>${helpText}</small>`;

@@ -1289,6 +1289,17 @@ footer p {
     line-height: 1.5;
 }
 
+.optional-badge {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
 .btn-gps {
     background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
     color: white;
@@ -1345,15 +1356,15 @@ footer p {
 }
 
 .gps-status.error {
-    background: #ffebee;
-    color: #c62828;
-    border: 1px solid #f44336;
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #2196f3;
 }
 
 .gps-status.error small {
     display: block;
     margin-top: 0.5rem;
-    color: #d32f2f;
+    color: #1976d2;
     font-size: 0.85rem;
     line-height: 1.4;
 }
