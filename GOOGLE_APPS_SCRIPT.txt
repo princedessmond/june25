@@ -41,6 +41,8 @@ function doPost(e) {
       sheetName = 'Transport Requests';
     } else if (data.id && data.id.startsWith('LEG')) {
       sheetName = 'Legal Aid Requests';
+    } else if (data.id && data.id.startsWith('POL')) {
+      sheetName = 'Police Alerts';
     } else {
       sheetName = 'Registrations'; // Default
     }
@@ -58,6 +60,8 @@ function doPost(e) {
         sheet.appendRow(['Timestamp', 'Reference ID', 'Name', 'Phone', 'Departure Point', 'Passenger Count', 'Route']);
       } else if (sheetName === 'Legal Aid Requests') {
         sheet.appendRow(['Timestamp', 'Case Reference', 'Name', 'Phone', 'Email', 'Urgency', 'Issue Description', 'Current Location']);
+      } else if (sheetName === 'Police Alerts') {
+        sheet.appendRow(['Timestamp', 'Alert ID', 'County', 'Specific Location', 'Activity Type', 'Officer Count', 'Vehicle Count', 'Description', 'Reporter Contact']);
       }
     }
 
@@ -95,6 +99,18 @@ function doPost(e) {
         data.urgency,
         data.issue,
         data.location || ''
+      ];
+    } else if (sheetName === 'Police Alerts') {
+      rowData = [
+        new Date(data.timestamp),
+        data.id,
+        data.county,
+        data.specificLocation,
+        data.activityType,
+        data.officerCount || '',
+        data.vehicleCount || '',
+        data.description || '',
+        data.reporterContact || ''
       ];
     }
 

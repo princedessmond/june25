@@ -604,3 +604,213 @@ console.log('%cOrganizer Commands:', 'font-size: 14px; font-weight: bold;');
 console.log('- getAdminStats() : View detailed statistics');
 console.log('- exportRegistrations() : Export all data');
 console.log('%cNote: In production, these would require authentication', 'color: #d32f2f;');
+
+// ============================================
+// POLICE ALERT SYSTEM
+// ============================================
+
+// Police Alert Form Submission
+document.getElementById('policeReportForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = {
+        id: 'POL' + Date.now(),
+        timestamp: new Date().toISOString(),
+        county: document.getElementById('alertCounty').value,
+        specificLocation: document.getElementById('specificLocation').value,
+        activityType: document.getElementById('activityType').value,
+        officerCount: document.getElementById('officerCount').value,
+        vehicleCount: document.getElementById('vehicleCount').value,
+        description: document.getElementById('alertDescription').value,
+        reporterContact: document.getElementById('reporterContact').value
+    };
+
+    // Save to localStorage
+    savePoliceAlert(formData);
+
+    // Send to Google Sheets
+    if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.policeAlertURL) {
+        await sendToGoogleSheets(GOOGLE_SHEETS_CONFIG.policeAlertURL, formData);
+    }
+
+    // Show success message
+    document.getElementById('policeReportForm').style.display = 'none';
+    document.getElementById('alertSuccess').style.display = 'block';
+    document.getElementById('alertRefNumber').textContent = formData.id;
+
+    // Add to live feed immediately
+    addAlertToFeed(formData);
+
+    // Reset form and show it again after 3 seconds
+    setTimeout(() => {
+        document.getElementById('policeReportForm').reset();
+        document.getElementById('policeReportForm').style.display = 'block';
+        document.getElementById('alertSuccess').style.display = 'none';
+    }, 3000);
+});
+
+// Save police alert to localStorage
+function savePoliceAlert(alertData) {
+    let alerts = JSON.parse(localStorage.getItem('policeAlerts') || '[]');
+    alerts.push(alertData);
+    // Keep only last 50 alerts
+    if (alerts.length > 50) {
+        alerts = alerts.slice(-50);
+    }
+    localStorage.setItem('policeAlerts', JSON.stringify(alerts));
+}
+
+// Get all police alerts
+function getPoliceAlerts() {
+    return JSON.parse(localStorage.getItem('policeAlerts') || '[]');
+}
+
+// Add alert to live feed
+function addAlertToFeed(alertData) {
+    const feedContainer = document.getElementById('alertFeedContainer');
+    const alertItem = createAlertElement(alertData);
+
+    // Add to beginning of feed
+    feedContainer.insertBefore(alertItem, feedContainer.firstChild);
+
+    // Remove oldest if more than 20
+    const alerts = feedContainer.querySelectorAll('.alert-item');
+    if (alerts.length > 20) {
+        alerts[alerts.length - 1].remove();
+    }
+}
+
+// Create alert HTML element
+function createAlertElement(alertData) {
+    const div = document.createElement('div');
+    const alertClass = getAlertClass(alertData.activityType);
+    const timeAgo = getTimeAgo(alertData.timestamp);
+
+    div.className = `alert-item ${alertClass}`;
+    div.innerHTML = `
+        <div class="alert-header">
+            <span class="alert-type">${formatActivityType(alertData.activityType)}</span>
+            <span class="alert-time">${timeAgo}</span>
+        </div>
+        <div class="alert-location">📍 ${alertData.county} - ${alertData.specificLocation}</div>
+        <div class="alert-details">
+            ${alertData.description || formatAlertDetails(alertData)}
+        </div>
+    `;
+
+    return div;
+}
+
+// Determine alert severity class
+function getAlertClass(activityType) {
+    const dangerTypes = ['teargas', 'arrests', 'dispersal'];
+    const warningTypes = ['large-deployment'];
+    const safeTypes = ['peaceful'];
+
+    if (dangerTypes.includes(activityType)) return 'alert-danger';
+    if (warningTypes.includes(activityType)) return 'alert-warning';
+    if (safeTypes.includes(activityType)) return 'alert-safe';
+    return 'alert-info';
+}
+
+// Format activity type for display
+function formatActivityType(type) {
+    const types = {
+        'patrol': 'Regular Patrol',
+        'roadblock': 'Roadblock',
+        'large-deployment': 'Large Deployment',
+        'dispersal': 'Crowd Dispersal',
+        'teargas': 'Tear Gas',
+        'arrests': 'Making Arrests',
+        'peaceful': 'Peaceful Monitoring',
+        'other': 'Other Activity'
+    };
+    return types[type] || type;
+}
+
+// Format alert details
+function formatAlertDetails(alertData) {
+    let details = '';
+    if (alertData.officerCount) {
+        details += `Approximately ${alertData.officerCount} officers`;
+    }
+    if (alertData.vehicleCount && alertData.vehicleCount !== '0') {
+        details += details ? ` with ${alertData.vehicleCount} vehicles` : `${alertData.vehicleCount} vehicles`;
+    }
+    return details || 'Police activity reported in the area';
+}
+
+// Get time ago string
+function getTimeAgo(timestamp) {
+    const now = new Date();
+    const then = new Date(timestamp);
+    const diffMs = now - then;
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins === 1) return '1 minute ago';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours === 1) return '1 hour ago';
+    if (diffHours < 24) return `${diffHours} hours ago`;
+
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays === 1) return '1 day ago';
+    return `${diffDays} days ago`;
+}
+
+// Load and display recent alerts on page load
+function loadRecentAlerts() {
+    const alerts = getPoliceAlerts();
+    const feedContainer = document.getElementById('alertFeedContainer');
+
+    // Clear demo alerts
+    feedContainer.innerHTML = '';
+
+    // If no alerts, show demo alerts
+    if (alerts.length === 0) {
+        // Keep the demo alerts that are already in HTML
+        return;
+    }
+
+    // Show real alerts (most recent first)
+    alerts.slice(-20).reverse().forEach(alert => {
+        const alertElement = createAlertElement(alert);
+        feedContainer.appendChild(alertElement);
+    });
+}
+
+// County filter functionality
+document.getElementById('filterCounty').addEventListener('change', function() {
+    const selectedCounty = this.value;
+    const alertItems = document.querySelectorAll('.alert-item');
+
+    alertItems.forEach(item => {
+        const locationText = item.querySelector('.alert-location').textContent.toLowerCase();
+
+        if (selectedCounty === 'all' || locationText.includes(selectedCounty.toLowerCase())) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+
+// Update time ago every minute
+setInterval(() => {
+    const timeElements = document.querySelectorAll('.alert-time');
+    const alerts = getPoliceAlerts();
+
+    timeElements.forEach((element, index) => {
+        if (alerts[index]) {
+            element.textContent = getTimeAgo(alerts[index].timestamp);
+        }
+    });
+}, 60000);
+
+// Load alerts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Slight delay to ensure HTML is fully rendered
+    setTimeout(loadRecentAlerts, 100);
+});

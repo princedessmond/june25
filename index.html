@@ -22,6 +22,7 @@
                     <span></span>
                 </button>
                 <div class="nav-links" id="navLinks">
+                    <a href="#police-alerts">🚨 Police Alerts</a>
                     <a href="#register">Register</a>
                     <a href="#transport">Transport Support</a>
                     <a href="#legal">Legal Aid</a>
@@ -184,6 +185,193 @@
                     <div class="info-card">
                         <h4>Legal Support Ready</h4>
                         <p>Free legal aid is available 24/7 through our partner lawyers. See Legal Aid section below.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Police Presence Alert System -->
+        <section id="police-alerts" class="section police-alert-section">
+            <div class="container">
+                <h2 class="section-title">🚨 Police Presence Alerts</h2>
+                <p class="section-subtitle">Report and view real-time police activity to stay safe during the protest</p>
+
+                <div class="alert-system-grid">
+                    <!-- Report Form (Left Side) -->
+                    <div class="alert-report-form">
+                        <h3>Report Police Activity</h3>
+                        <form id="policeReportForm" class="main-form">
+                            <div class="form-group">
+                                <label for="alertCounty">County/Location *</label>
+                                <select id="alertCounty" name="alertCounty" required>
+                                    <option value="">Select county</option>
+                                    <option value="nairobi">Nairobi</option>
+                                    <option value="mombasa">Mombasa</option>
+                                    <option value="kisumu">Kisumu</option>
+                                    <option value="nakuru">Nakuru</option>
+                                    <option value="eldoret">Eldoret (Uasin Gishu)</option>
+                                    <option value="meru">Meru</option>
+                                    <option value="nyeri">Nyeri</option>
+                                    <option value="thika">Thika (Kiambu)</option>
+                                    <option value="machakos">Machakos</option>
+                                    <option value="kakamega">Kakamega</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="specificLocation">Specific Location/Street *</label>
+                                <input type="text" id="specificLocation" name="specificLocation" placeholder="e.g., Uhuru Park, Moi Avenue, GPO" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="activityType">Type of Police Activity *</label>
+                                <select id="activityType" name="activityType" required>
+                                    <option value="">Select activity type</option>
+                                    <option value="patrol">Regular Patrol</option>
+                                    <option value="roadblock">Roadblock/Checkpoint</option>
+                                    <option value="large-deployment">Large Deployment</option>
+                                    <option value="dispersal">Crowd Dispersal Attempt</option>
+                                    <option value="teargas">Tear Gas Usage</option>
+                                    <option value="arrests">Making Arrests</option>
+                                    <option value="peaceful">Peaceful Monitoring</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="officerCount">Approx. Number of Officers</label>
+                                    <select id="officerCount" name="officerCount">
+                                        <option value="">Select</option>
+                                        <option value="1-5">1-5 officers</option>
+                                        <option value="6-10">6-10 officers</option>
+                                        <option value="10-20">10-20 officers</option>
+                                        <option value="20-50">20-50 officers</option>
+                                        <option value="50+">50+ officers</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="vehicleCount">Number of Vehicles</label>
+                                    <select id="vehicleCount" name="vehicleCount">
+                                        <option value="">Select</option>
+                                        <option value="0">None</option>
+                                        <option value="1-2">1-2 vehicles</option>
+                                        <option value="3-5">3-5 vehicles</option>
+                                        <option value="5-10">5-10 vehicles</option>
+                                        <option value="10+">10+ vehicles</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="alertDescription">Additional Details</label>
+                                <textarea id="alertDescription" name="alertDescription" rows="3" placeholder="Any additional information that might be helpful..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reporterContact">Your Phone (Optional - for verification)</label>
+                                <input type="tel" id="reporterContact" name="reporterContact" placeholder="0712345678">
+                                <small>Your contact will be kept private and only used to verify reports if needed.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-alert">Submit Alert</button>
+                        </form>
+
+                        <div id="alertSuccess" class="success-message" style="display: none;">
+                            <p>✅ Alert submitted successfully! Thank you for keeping fellow protesters safe.</p>
+                            <p><strong>Alert ID:</strong> <span id="alertRefNumber"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Live Alerts Feed (Right Side) -->
+                    <div class="alert-feed">
+                        <h3>🔴 Live Alert Feed</h3>
+                        <p class="alert-feed-subtitle">Recent reports from the ground (refreshes automatically)</p>
+
+                        <div class="alert-filter">
+                            <label for="filterCounty">Filter by location:</label>
+                            <select id="filterCounty">
+                                <option value="all">All Locations</option>
+                                <option value="nairobi">Nairobi</option>
+                                <option value="mombasa">Mombasa</option>
+                                <option value="kisumu">Kisumu</option>
+                                <option value="nakuru">Nakuru</option>
+                                <option value="eldoret">Eldoret</option>
+                            </select>
+                        </div>
+
+                        <div id="alertFeedContainer" class="alert-feed-list">
+                            <!-- Demo alerts - will be replaced with real data -->
+                            <div class="alert-item alert-warning">
+                                <div class="alert-header">
+                                    <span class="alert-type">Large Deployment</span>
+                                    <span class="alert-time">3 minutes ago</span>
+                                </div>
+                                <div class="alert-location">📍 Nairobi - Uhuru Park area</div>
+                                <div class="alert-details">Approximately 20-50 officers with 5-10 vehicles spotted near main entrance</div>
+                            </div>
+
+                            <div class="alert-item alert-info">
+                                <div class="alert-header">
+                                    <span class="alert-type">Roadblock</span>
+                                    <span class="alert-time">8 minutes ago</span>
+                                </div>
+                                <div class="alert-location">📍 Nakuru - Kenyatta Avenue</div>
+                                <div class="alert-details">Checkpoint setup checking vehicles heading to CBD</div>
+                            </div>
+
+                            <div class="alert-item alert-safe">
+                                <div class="alert-header">
+                                    <span class="alert-type">Peaceful Monitoring</span>
+                                    <span class="alert-time">15 minutes ago</span>
+                                </div>
+                                <div class="alert-location">📍 Kisumu - City Center</div>
+                                <div class="alert-details">Small patrol observing from distance, no confrontations</div>
+                            </div>
+                        </div>
+
+                        <div class="alert-legend">
+                            <h4>Alert Types:</h4>
+                            <div class="legend-items">
+                                <span class="legend-item alert-danger">● High Alert (Tear gas, Arrests)</span>
+                                <span class="legend-item alert-warning">● Warning (Large deployment, Dispersal)</span>
+                                <span class="legend-item alert-info">● Moderate (Roadblock, Patrol)</span>
+                                <span class="legend-item alert-safe">● Safe (Peaceful monitoring)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety Tips -->
+                <div class="safety-tips">
+                    <h3>⚠️ Safety Tips When Encountering Police</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>1. Stay Calm</h4>
+                            <p>Remain peaceful and composed. Do not provoke or engage in arguments.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>2. Record Everything</h4>
+                            <p>If safe, record police interactions on video. This provides evidence if needed.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>3. Know Your Rights</h4>
+                            <p>You have the right to peaceful assembly (Article 37). Police must respect this.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>4. Stay in Groups</h4>
+                            <p>There's safety in numbers. Don't separate from fellow protesters.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>5. Legal Aid Ready</h4>
+                            <p>Call our 24/7 hotline immediately: <strong>0800 587 423</strong></p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>6. Move to Safety</h4>
+                            <p>If tear gas is deployed, move upwind and to a safe area. Rinse eyes with water.</p>
+                        </div>
                     </div>
                 </div>
             </div>

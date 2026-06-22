@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit - June 25 Peaceful Protest Website\n\nFeatures:\n- Dynamic hero carousel with 4 rotating banners\n- Live animated statistics (participants & funds)\n- Real-time countdown timer with urgency messaging\n- Complete registration system (all 47 Kenyan counties)\n- Transportation support with route details\n- Legal aid request system with emergency hotline\n- Comprehensive demands section (6 categories)\n- Google Sheets integration for data saving\n- Netlify deployment ready\n- Fully responsive (mobile, tablet, desktop)\n- Hamburger menu for mobile navigation\n- Touch-friendly interactions\n- Kenya flag color scheme (green, red, gold)\n\n🇰🇪 Stand together. March peacefully. Demand change.\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:kaarada-ke.netlify.app)"
     ],
     "deny": [],
     "ask": []

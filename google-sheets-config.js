@@ -28,7 +28,8 @@ SETUP INSTRUCTIONS:
 const GOOGLE_SHEETS_CONFIG = {
     registrationURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec',
     transportURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec',
-    legalURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec'
+    legalURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec',
+    policeAlertURL: 'https://script.google.com/macros/s/AKfycbynx5cZ34_LRTENU61IRfBYjFpN069EJYO0_ZR91Y67faGrVLn-OD4ZgUhxuvJ4jqNN/exec'
 };
 
 // Send data to Google Sheets
