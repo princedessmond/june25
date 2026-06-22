@@ -30,6 +30,7 @@
                 </button>
                 <div class="nav-links" id="navLinks">
                     <a href="#police-alerts">🚨 Police Alerts</a>
+                    <a href="#memorial">🕊️ In Remembrance</a>
                     <a href="#register">Register</a>
                     <a href="#transport">Transport Support</a>
                     <a href="#legal">Legal Aid</a>
@@ -209,6 +210,78 @@
                 </div>
             </div>
         </section>
+
+        <!-- Memorial Gallery Section -->
+        <section id="memorial" class="section memorial-section">
+            <div class="container">
+                <h2 class="section-title">In Remembrance</h2>
+                <p class="section-subtitle">Honoring those who stood for justice and paid the ultimate price</p>
+
+                <div class="memorial-intro">
+                    <p>We remember the brave Kenyans who lost their lives in the fight for justice, accountability, and a better Kenya. Their sacrifice will never be forgotten. We march in their honor.</p>
+                </div>
+
+                <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openLightbox(0)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(1)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749_002.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(2)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749_003.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(3)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749_004.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(4)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749_005.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(5)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749_006.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(6)">
+                        <img src="gallery/signal-2026-06-22-11-31-06-749_007.png" alt="Memorial">
+                        <div class="gallery-overlay">
+                            <span class="gallery-icon">🕊️</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="memorial-message">
+                    <p><strong>Rest in Power.</strong> Your sacrifice demands justice. Your memory inspires action.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lightbox Modal -->
+        <div id="lightbox" class="lightbox">
+            <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+            <div class="lightbox-content">
+                <img id="lightbox-image" src="" alt="Memorial">
+                <button class="lightbox-prev" onclick="changeLightboxImage(-1)">&#10094;</button>
+                <button class="lightbox-next" onclick="changeLightboxImage(1)">&#10095;</button>
+            </div>
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
 
         <!-- Important Information -->
         <section class="info-banner">

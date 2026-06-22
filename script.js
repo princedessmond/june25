@@ -1091,3 +1091,77 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize map
     setTimeout(initializePoliceMap, 200);
 });
+
+// ============================================
+// MEMORIAL GALLERY LIGHTBOX FUNCTIONALITY
+// ============================================
+
+const galleryImages = [
+    'gallery/signal-2026-06-22-11-31-06-749.png',
+    'gallery/signal-2026-06-22-11-31-06-749_002.png',
+    'gallery/signal-2026-06-22-11-31-06-749_003.png',
+    'gallery/signal-2026-06-22-11-31-06-749_004.png',
+    'gallery/signal-2026-06-22-11-31-06-749_005.png',
+    'gallery/signal-2026-06-22-11-31-06-749_006.png',
+    'gallery/signal-2026-06-22-11-31-06-749_007.png'
+];
+
+let currentImageIndex = 0;
+
+// Open lightbox with specific image
+function openLightbox(index) {
+    currentImageIndex = index;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+
+    lightboxImage.src = galleryImages[currentImageIndex];
+    lightbox.classList.add('active');
+
+    // Prevent body scroll when lightbox is open
+    document.body.style.overflow = 'hidden';
+}
+
+// Close lightbox
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.classList.remove('active');
+
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+}
+
+// Change image in lightbox
+function changeLightboxImage(direction) {
+    currentImageIndex += direction;
+
+    // Wrap around if at the end or beginning
+    if (currentImageIndex >= galleryImages.length) {
+        currentImageIndex = 0;
+    } else if (currentImageIndex < 0) {
+        currentImageIndex = galleryImages.length - 1;
+    }
+
+    const lightboxImage = document.getElementById('lightbox-image');
+    lightboxImage.src = galleryImages[currentImageIndex];
+}
+
+// Close lightbox when clicking outside the image
+document.getElementById('lightbox')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLightbox();
+    }
+});
+
+// Keyboard navigation for lightbox
+document.addEventListener('keydown', function(e) {
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox && lightbox.classList.contains('active')) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+            changeLightboxImage(-1);
+        } else if (e.key === 'ArrowRight') {
+            changeLightboxImage(1);
+        }
+    }
+});
