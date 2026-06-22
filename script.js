@@ -1093,7 +1093,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
-// MEMORIAL GALLERY LIGHTBOX FUNCTIONALITY
+// MEMORIAL GALLERY - HORIZONTAL SCROLL & LIGHTBOX
 // ============================================
 
 const galleryImages = [
@@ -1107,6 +1107,24 @@ const galleryImages = [
 ];
 
 let currentImageIndex = 0;
+
+// Smooth horizontal scroll for gallery
+function scrollGallery(direction) {
+    const gallery = document.getElementById('memorialGallery');
+    const scrollAmount = 450; // Scroll by approximately one card width
+
+    if (direction === -1) {
+        gallery.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+    } else {
+        gallery.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+}
 
 // Open lightbox with specific image
 function openLightbox(index) {

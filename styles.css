@@ -1654,115 +1654,270 @@ footer p {
 }
 
 /* ============================================
-   MEMORIAL GALLERY SECTION
+   MEMORIAL GALLERY SECTION - MODERN HORIZONTAL SCROLL
    ============================================ */
 
 .memorial-section {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
     color: var(--white);
     padding: 4rem 0;
-}
-
-.memorial-section .section-title {
-    color: var(--white);
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.memorial-section .section-subtitle {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-}
-
-.memorial-intro {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto 3rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-left: 4px solid var(--accent-color);
-    border-radius: 8px;
-}
-
-.memorial-intro p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-/* Gallery Grid */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin: 3rem 0;
-}
-
-.gallery-item {
     position: relative;
     overflow: hidden;
-    border-radius: 12px;
-    cursor: pointer;
-    aspect-ratio: 1;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.gallery-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.3s ease;
-}
-
-.gallery-overlay {
+.memorial-section::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
 }
 
-.gallery-item:hover .gallery-overlay {
-    opacity: 1;
+.memorial-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.memorial-section .section-title {
+    color: var(--white);
+    font-size: 2.8rem;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.memorial-section .section-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+    font-weight: 400;
+}
+
+.memorial-intro {
+    text-align: center;
+    max-width: 850px;
+    margin: 2rem auto 0;
+    padding: 1.8rem 2rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.03));
+    border-left: 4px solid var(--accent-color);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.memorial-intro p {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 400;
+}
+
+/* Horizontal Gallery Wrapper */
+.gallery-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 2rem 0;
+    margin: 2rem 0;
+}
+
+/* Gallery Container - Horizontal Scroll */
+.gallery-container {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 2rem 5%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) rgba(255, 255, 255, 0.1);
+    -webkit-overflow-scrolling: touch;
+}
+
+.gallery-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.gallery-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin: 0 10%;
+}
+
+.gallery-container::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.gallery-container::-webkit-scrollbar-thumb:hover {
+    background: #ffed4e;
+}
+
+/* Gallery Cards */
+.gallery-card {
+    flex: 0 0 auto;
+    width: 400px;
+    height: 500px;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gallery-card:hover {
+    transform: translateY(-12px) scale(1.02);
+}
+
+.gallery-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 215, 0, 0.1);
+    transition: box-shadow 0.4s ease;
+}
+
+.gallery-card:hover .gallery-card-inner {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                0 0 0 2px var(--accent-color);
+}
+
+.gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease, filter 0.4s ease;
+}
+
+.gallery-card:hover img {
+    transform: scale(1.08);
+    filter: brightness(0.8);
+}
+
+/* Card Overlay */
+.gallery-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.7) 50%,
+        transparent 100%);
+    padding: 2.5rem 1.5rem 1.5rem;
+    transform: translateY(60%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gallery-card:hover .gallery-card-overlay {
+    transform: translateY(0);
+}
+
+.gallery-card-content {
+    text-align: center;
 }
 
 .gallery-icon {
     font-size: 3rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    display: block;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+    animation: float 3s ease-in-out infinite;
 }
 
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.gallery-card-text {
+    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.3px;
+}
+
+/* Scroll Buttons */
+.gallery-scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 215, 0, 0.15);
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.gallery-scroll-btn:hover {
+    background: var(--accent-color);
+    color: #1a1a1a;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 30px rgba(255, 215, 0, 0.5);
+}
+
+.gallery-scroll-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.gallery-scroll-left {
+    left: 1rem;
+}
+
+.gallery-scroll-right {
+    right: 1rem;
+}
+
+.gallery-scroll-btn span {
+    line-height: 1;
+    font-weight: 300;
+}
+
+/* Memorial Message */
 .memorial-message {
     text-align: center;
     margin-top: 3rem;
-    padding: 2rem;
-    background: rgba(255, 215, 0, 0.1);
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg,
+        rgba(255, 215, 0, 0.12),
+        rgba(255, 215, 0, 0.05));
     border: 2px solid var(--accent-color);
-    border-radius: 12px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
 }
 
 .memorial-message p {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--white);
-    line-height: 1.6;
+    line-height: 1.7;
+    margin: 0;
 }
 
 .memorial-message strong {
     color: var(--accent-color);
-    font-size: 1.4rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
 }
 
 /* ============================================
@@ -1870,31 +2025,75 @@ footer p {
 }
 
 /* Responsive Gallery */
+@media (max-width: 1024px) {
+    .gallery-card {
+        width: 350px;
+        height: 450px;
+    }
+
+    .gallery-scroll-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 2rem;
+    }
+}
+
 @media (max-width: 768px) {
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
+    .memorial-section {
+        padding: 3rem 0;
     }
 
     .memorial-section .section-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
+    }
+
+    .memorial-section .section-subtitle {
+        font-size: 1rem;
     }
 
     .memorial-intro {
-        padding: 1rem;
-        margin-bottom: 2rem;
+        padding: 1.5rem;
+        margin: 1.5rem auto 0;
     }
 
     .memorial-intro p {
         font-size: 1rem;
     }
 
+    .gallery-card {
+        width: 320px;
+        height: 420px;
+    }
+
+    .gallery-container {
+        padding: 1.5rem 3%;
+    }
+
+    .gallery-scroll-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.8rem;
+    }
+
+    .gallery-scroll-left {
+        left: 0.5rem;
+    }
+
+    .gallery-scroll-right {
+        right: 0.5rem;
+    }
+
     .memorial-message {
-        padding: 1.5rem;
+        padding: 2rem 1.5rem;
+        margin-top: 2rem;
     }
 
     .memorial-message p {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+    }
+
+    .memorial-message strong {
+        font-size: 1.4rem;
     }
 
     .lightbox-prev,
@@ -1910,25 +2109,71 @@ footer p {
 }
 
 @media (max-width: 480px) {
-    .gallery-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
     .memorial-section {
-        padding: 3rem 0;
+        padding: 2.5rem 0;
     }
 
     .memorial-section .section-title {
-        font-size: 1.75rem;
+        font-size: 1.9rem;
+    }
+
+    .memorial-section .section-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .memorial-intro {
+        padding: 1.2rem;
+        margin: 1rem auto 0;
+    }
+
+    .memorial-intro p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .gallery-card {
+        width: 280px;
+        height: 380px;
+    }
+
+    .gallery-container {
+        padding: 1rem 2%;
+        gap: 1.5rem;
+    }
+
+    .gallery-card-text {
+        font-size: 1rem;
+    }
+
+    .gallery-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .gallery-scroll-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    .gallery-scroll-left {
+        left: 0.25rem;
+    }
+
+    .gallery-scroll-right {
+        right: 0.25rem;
+    }
+
+    .memorial-message {
+        padding: 1.5rem 1rem;
+    }
+
+    .memorial-message p {
+        font-size: 1.1rem;
     }
 
     .memorial-message strong {
         font-size: 1.2rem;
-    }
-
-    .gallery-icon {
-        font-size: 2rem;
     }
 
     .lightbox-prev {

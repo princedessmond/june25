@@ -213,59 +213,113 @@
 
         <!-- Memorial Gallery Section -->
         <section id="memorial" class="section memorial-section">
+            <div class="memorial-header">
+                <div class="container">
+                    <h2 class="section-title">In Remembrance</h2>
+                    <p class="section-subtitle">Honoring those who stood for justice and paid the ultimate price</p>
+                    <div class="memorial-intro">
+                        <p>We remember the brave Kenyans who lost their lives in the fight for justice, accountability, and a better Kenya. Their sacrifice will never be forgotten. We march in their honor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-wrapper">
+                <button class="gallery-scroll-btn gallery-scroll-left" onclick="scrollGallery(-1)" aria-label="Scroll left">
+                    <span>‹</span>
+                </button>
+
+                <div class="gallery-container" id="memorialGallery">
+                    <div class="gallery-card" onclick="openLightbox(0)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749.png" alt="Memorial - We Will Never Forget">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">We Will Never Forget</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card" onclick="openLightbox(1)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749_002.png" alt="Memorial - In Their Honor">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">In Their Honor</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card" onclick="openLightbox(2)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749_003.png" alt="Memorial - Kennedy Onyango">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">Remembering Kennedy Onyango</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card" onclick="openLightbox(3)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749_004.png" alt="Memorial - Rex Masai">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">Rex Masai - Rest in Power</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card" onclick="openLightbox(4)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749_005.png" alt="Memorial - Eric Shieni">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">Eric Shieni - Gone But Not Forgotten</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card" onclick="openLightbox(5)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749_006.png" alt="Memorial - We Carry Their Dreams">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">We Carry Their Dreams</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card" onclick="openLightbox(6)">
+                        <div class="gallery-card-inner">
+                            <img src="gallery/signal-2026-06-22-11-31-06-749_007.png" alt="Memorial - Their Sacrifice">
+                            <div class="gallery-card-overlay">
+                                <div class="gallery-card-content">
+                                    <span class="gallery-icon">🕊️</span>
+                                    <p class="gallery-card-text">Their Sacrifice Lives On</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="gallery-scroll-btn gallery-scroll-right" onclick="scrollGallery(1)" aria-label="Scroll right">
+                    <span>›</span>
+                </button>
+            </div>
+
             <div class="container">
-                <h2 class="section-title">In Remembrance</h2>
-                <p class="section-subtitle">Honoring those who stood for justice and paid the ultimate price</p>
-
-                <div class="memorial-intro">
-                    <p>We remember the brave Kenyans who lost their lives in the fight for justice, accountability, and a better Kenya. Their sacrifice will never be forgotten. We march in their honor.</p>
-                </div>
-
-                <div class="gallery-grid">
-                    <div class="gallery-item" onclick="openLightbox(0)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="openLightbox(1)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749_002.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="openLightbox(2)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749_003.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="openLightbox(3)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749_004.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="openLightbox(4)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749_005.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="openLightbox(5)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749_006.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="openLightbox(6)">
-                        <img src="gallery/signal-2026-06-22-11-31-06-749_007.png" alt="Memorial">
-                        <div class="gallery-overlay">
-                            <span class="gallery-icon">🕊️</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="memorial-message">
                     <p><strong>Rest in Power.</strong> Your sacrifice demands justice. Your memory inspires action.</p>
                 </div>
