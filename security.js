@@ -8,17 +8,20 @@
 // ============================================
 
 // ---- Google reCAPTCHA v3 (OPT-IN, OFF BY DEFAULT) --------------------------
-// reCAPTCHA REQUIRES keys from https://www.google.com/recaptcha/admin
-// (a public "site key" embedded here + a secret key used for SERVER-side
-// verification). With a purely static site the token can be collected but NOT
-// truly verified, so this is left disabled. The honeypot + timing + cooldown
-// protections above run with zero keys and cover the common bot cases.
+// reCAPTCHA v3 is ENABLED. The browser loads Google's script and attaches a
+// token (per action) to every form submission as `recaptchaToken`.
 //
-// To enable later: create v3 keys, paste the site key below, flip the flag to
-// true, and verify the token server-side (e.g. in a Netlify Function) with your
-// secret key before trusting a submission.
-const RECAPTCHA_ENABLED = false;
-const RECAPTCHA_SITE_KEY = 'YOUR_RECAPTCHA_V3_SITE_KEY';
+// IMPORTANT: a site key alone does NOT block spam. The token MUST be verified
+// SERVER-SIDE with your SECRET key before a submission is trusted. For this
+// project that means adding verifyRecaptcha() to the Google Apps Script that
+// receives the forms — see docs/RECAPTCHA_SETUP.md. Until that server check is
+// in place, reCAPTCHA runs but enforces nothing; the honeypot + timing trap +
+// per-device cooldown below are what actively stop bots in the meantime.
+//
+// The SITE KEY is public and safe to commit. NEVER put the SECRET key here —
+// it belongs only in the Apps Script Script Properties.
+const RECAPTCHA_ENABLED = true;
+const RECAPTCHA_SITE_KEY = '6LfChi8tAAAAAP_NXHlaYxdLzlgXSFoi9j5ymtgy';
 
 if (RECAPTCHA_ENABLED &&
     RECAPTCHA_SITE_KEY &&
