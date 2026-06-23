@@ -1,8 +1,15 @@
-// Data storage (In production, this would connect to a backend database)
-let registrations = JSON.parse(localStorage.getItem('june25_registrations')) || [];
-let transportRequests = JSON.parse(localStorage.getItem('june25_transport')) || [];
-let legalRequests = JSON.parse(localStorage.getItem('june25_legal')) || [];
-let donations = JSON.parse(localStorage.getItem('june25_donations')) || { total: 0 };
+// Privacy-first: personal data is NOT persisted on the device. Submitted data
+// lives in the backend (Google Sheets). Any legacy PII left in localStorage from
+// older versions is purged on load so names/phones/case details don't linger.
+['june25_registrations', 'june25_transport', 'june25_legal'].forEach(function (key) {
+    localStorage.removeItem(key);
+});
+
+// In-memory only (cleared on every page load) — used for the current session.
+let registrations = [];
+let transportRequests = [];
+let legalRequests = [];
+let donations = { total: 0 };
 
 // Live demo mode - simulated realistic stats
 const DEMO_MODE = true; // Set to false for production
@@ -12,6 +19,14 @@ let liveFundAmount = 0;
 // Carousel variables
 let currentSlideIndex = 0;
 let carouselInterval;
+
+// Register the service worker for offline/PWA support.
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js')
+            .catch(function (err) { console.warn('Service worker registration failed:', err); });
+    });
+}
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
@@ -200,11 +215,49 @@ function startCountdown() {
 
 // ===== ANIMATED STATISTICS =====
 
-// Initialize live stats with random starting values
+// Persisted anchor so the counters keep RISING across page refreshes
+// instead of resetting to a new random value every time the page loads.
+const STATS_ANCHOR_KEY = 'june25_stats_anchor';
+const REG_GROWTH_PER_SEC = 1 / 6;   // ~1 new registration every 6 seconds
+const FUND_GROWTH_PER_SEC = 12;     // ~KSh 12 raised every second
+
+// Load (or seed once) the growth anchor: a base value + the time it was set.
+function loadStatsAnchor() {
+    let anchor = null;
+    try {
+        anchor = JSON.parse(localStorage.getItem(STATS_ANCHOR_KEY));
+    } catch (e) {
+        anchor = null;
+    }
+
+    if (!anchor || typeof anchor.baseReg !== 'number' || typeof anchor.baseFund !== 'number') {
+        // First ever visit on this device: seed a realistic starting point once.
+        anchor = {
+            startTime: Date.now(),
+            baseReg: Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000,   // 2000-4000
+            baseFund: Math.floor(Math.random() * (10000 - 8000 + 1)) + 8000  // 8000-10000
+        };
+        localStorage.setItem(STATS_ANCHOR_KEY, JSON.stringify(anchor));
+    }
+    return anchor;
+}
+
+// Persist the current values as the new anchor so the next load resumes
+// from here (guarantees the numbers never drop on refresh).
+function saveStatsAnchor() {
+    localStorage.setItem(STATS_ANCHOR_KEY, JSON.stringify({
+        startTime: Date.now(),
+        baseReg: liveRegistrationCount,
+        baseFund: liveFundAmount
+    }));
+}
+
+// Initialize live stats from the persisted anchor + real elapsed time.
 function initializeLiveStats() {
-    // Random starting values in the specified ranges
-    liveRegistrationCount = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000; // 2000-4000
-    liveFundAmount = Math.floor(Math.random() * (10000 - 8000 + 1)) + 8000; // 8000-10000
+    const anchor = loadStatsAnchor();
+    const elapsedSec = Math.max(0, (Date.now() - anchor.startTime) / 1000);
+    liveRegistrationCount = anchor.baseReg + Math.floor(elapsedSec * REG_GROWTH_PER_SEC);
+    liveFundAmount = anchor.baseFund + Math.floor(elapsedSec * FUND_GROWTH_PER_SEC);
 }
 
 // Start live stats simulation
@@ -213,53 +266,32 @@ function startLiveStatsSimulation() {
     animateNumber('registeredCount', liveRegistrationCount, 2000);
     animateNumber('fundedAmount', liveFundAmount, 2500, true);
 
-    // Increment registrations slowly - one person at a time, more frequently
+    // Increment registrations slowly - one person at a time. Numbers only ever
+    // go UP; we persist the anchor so a refresh resumes from here, never resets.
     setInterval(() => {
-        const increment = 1; // Single registration at a time feels more realistic
-        liveRegistrationCount += increment;
-
-        // Keep within range 2k-6k
-        if (liveRegistrationCount > 6000) {
-            liveRegistrationCount = Math.floor(Math.random() * (3000 - 2000 + 1)) + 2000; // Reset to 2000-3000
-        }
-
+        liveRegistrationCount += 1; // Single registration at a time feels realistic
         updateLiveStat('registeredCount', liveRegistrationCount);
-    }, Math.random() * (5000 - 2000) + 2000); // Random interval 2-5 seconds (slower, more realistic)
+        saveStatsAnchor();
+    }, Math.random() * (5000 - 2000) + 2000); // Random interval 2-5 seconds
 
     // Increment funds slowly - smaller amounts more frequently
     setInterval(() => {
-        const increment = Math.floor(Math.random() * (200 - 50 + 1)) + 50; // KSh 50-200 (smaller amounts)
+        const increment = Math.floor(Math.random() * (200 - 50 + 1)) + 50; // KSh 50-200
         liveFundAmount += increment;
-
-        // Keep within range up to 12k
-        if (liveFundAmount > 12000) {
-            liveFundAmount = Math.floor(Math.random() * (9000 - 8000 + 1)) + 8000; // Reset to 8000-9000
-        }
-
         updateLiveStat('fundedAmount', liveFundAmount, true);
-    }, Math.random() * (8000 - 4000) + 4000); // Random interval 4-8 seconds (slower)
+        saveStatsAnchor();
+    }, Math.random() * (8000 - 4000) + 4000); // Random interval 4-8 seconds
 
-    // Occasional small spike every 30-60 seconds (more realistic than frequent large spikes)
+    // Occasional small spike every 30-60 seconds for a sense of momentum
     setInterval(() => {
-        const spike = Math.floor(Math.random() * (8 - 3 + 1)) + 3; // 3-8 people at once (smaller spikes)
-        liveRegistrationCount += spike;
-
-        if (liveRegistrationCount > 6000) {
-            liveRegistrationCount = 6000;
-        }
-
+        liveRegistrationCount += Math.floor(Math.random() * (8 - 3 + 1)) + 3; // 3-8 people at once
         updateLiveStat('registeredCount', liveRegistrationCount);
 
         // Also add funds during spike (proportional)
-        const fundSpike = Math.floor(Math.random() * (400 - 150 + 1)) + 150;
-        liveFundAmount += fundSpike;
-
-        if (liveFundAmount > 12000) {
-            liveFundAmount = 12000;
-        }
-
+        liveFundAmount += Math.floor(Math.random() * (400 - 150 + 1)) + 150;
         updateLiveStat('fundedAmount', liveFundAmount, true);
-    }, Math.random() * (60000 - 30000) + 30000); // Random spike 30-60 seconds (less frequent)
+        saveStatsAnchor();
+    }, Math.random() * (60000 - 30000) + 30000); // Random spike 30-60 seconds
 }
 
 // Update live stat with smooth animation
@@ -365,6 +397,14 @@ function generateReferenceNumber(prefix) {
     return `${prefix}${timestamp}${random}`;
 }
 
+// Privacy: remove personally identifiable data from this device. Names, phones,
+// emails and legal-case details should never linger in localStorage where a
+// seized or shared device could expose participants. The submitted data lives
+// in the backend (Google Sheets), so nothing is lost by clearing it locally.
+function purgeLocalPII(storageKey) {
+    localStorage.removeItem(storageKey);
+}
+
 // Setup form handlers
 function setupFormHandlers() {
     // Registration Form
@@ -389,6 +429,10 @@ function setupFormHandlers() {
 // Handle registration form submission
 async function handleRegistrationSubmit(e) {
     e.preventDefault();
+    const form = e.target;
+
+    // Anti-spam: honeypot + timing trap + per-device cooldown (no keys required)
+    if (!passesAntiSpam(form, 'registration', 30000)) return;
 
     const formData = {
         id: generateReferenceNumber('REG'),
@@ -398,17 +442,18 @@ async function handleRegistrationSubmit(e) {
         location: document.getElementById('location').value,
         assemblyPoint: document.getElementById('assemblyPoint').value,
         needTransport: document.getElementById('needTransport').checked,
+        recaptchaToken: await getRecaptchaToken('register'),
         timestamp: new Date().toISOString()
     };
 
-    // Save to localStorage (backup)
-    registrations.push(formData);
-    localStorage.setItem('june25_registrations', JSON.stringify(registrations));
-
-    // Send to Google Sheets
+    // Send to Google Sheets (the backend is the source of truth).
     if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.registrationURL) {
         await sendToGoogleSheets(GOOGLE_SHEETS_CONFIG.registrationURL, formData);
     }
+
+    // Privacy: purge any personal data from this device after submission.
+    purgeLocalPII('june25_registrations');
+    recordSubmit('registration');
 
     // Update stats
     updateStats();
@@ -432,6 +477,10 @@ async function handleRegistrationSubmit(e) {
 // Handle transport request submission
 async function handleTransportSubmit(e) {
     e.preventDefault();
+    const form = e.target;
+
+    // Anti-spam: honeypot + timing trap + per-device cooldown (no keys required)
+    if (!passesAntiSpam(form, 'transport', 30000)) return;
 
     const formData = {
         id: generateReferenceNumber('TRN'),
@@ -440,17 +489,18 @@ async function handleTransportSubmit(e) {
         departurePoint: document.getElementById('departurePoint').value,
         passengerCount: document.getElementById('passengerCount').value,
         route: document.getElementById('transportRoute').value,
+        recaptchaToken: await getRecaptchaToken('transport'),
         timestamp: new Date().toISOString()
     };
 
-    // Save to localStorage (backup)
-    transportRequests.push(formData);
-    localStorage.setItem('june25_transport', JSON.stringify(transportRequests));
-
-    // Send to Google Sheets
+    // Send to Google Sheets (the backend is the source of truth).
     if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.transportURL) {
         await sendToGoogleSheets(GOOGLE_SHEETS_CONFIG.transportURL, formData);
     }
+
+    // Privacy: purge any personal data from this device after submission.
+    purgeLocalPII('june25_transport');
+    recordSubmit('transport');
 
     // Show success message
     document.getElementById('transportForm').style.display = 'none';
@@ -468,6 +518,10 @@ async function handleTransportSubmit(e) {
 // Handle legal aid request submission
 async function handleLegalSubmit(e) {
     e.preventDefault();
+    const form = e.target;
+
+    // Anti-spam: honeypot + timing trap + per-device cooldown (no keys required)
+    if (!passesAntiSpam(form, 'legal', 20000)) return;
 
     const formData = {
         id: generateReferenceNumber('LEG'),
@@ -477,17 +531,18 @@ async function handleLegalSubmit(e) {
         urgency: document.getElementById('urgency').value,
         issue: document.getElementById('legalIssue').value,
         location: document.getElementById('currentLocation').value,
+        recaptchaToken: await getRecaptchaToken('legal'),
         timestamp: new Date().toISOString()
     };
 
-    // Save to localStorage (backup)
-    legalRequests.push(formData);
-    localStorage.setItem('june25_legal', JSON.stringify(legalRequests));
-
-    // Send to Google Sheets
+    // Send to Google Sheets (the backend is the source of truth).
     if (typeof GOOGLE_SHEETS_CONFIG !== 'undefined' && GOOGLE_SHEETS_CONFIG.legalURL) {
         await sendToGoogleSheets(GOOGLE_SHEETS_CONFIG.legalURL, formData);
     }
+
+    // Privacy: purge confidential case details from this device after submission.
+    purgeLocalPII('june25_legal');
+    recordSubmit('legal');
 
     // Show success message
     document.getElementById('legalForm').style.display = 'none';
@@ -875,10 +930,16 @@ function getSeverityIntensity(activityType) {
 // Police Alert Form Submission
 document.getElementById('policeReportForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    const form = e.target;
+
+    // Anti-spam: honeypot + timing trap + per-device cooldown (shorter cooldown
+    // here since rapid, repeated safety reports are legitimate during a protest).
+    if (!passesAntiSpam(form, 'policeAlert', 15000)) return;
 
     const formData = {
         id: 'POL' + Date.now(),
         timestamp: new Date().toISOString(),
+        recaptchaToken: await getRecaptchaToken('police_alert'),
         county: document.getElementById('alertCounty').value,
         specificLocation: document.getElementById('specificLocation').value,
         activityType: document.getElementById('activityType').value,
@@ -891,8 +952,9 @@ document.getElementById('policeReportForm').addEventListener('submit', async fun
         gpsAccuracy: document.getElementById('gpsAccuracy').value || ''
     };
 
-    // Save to localStorage
+    // Save to localStorage (PII stripped inside savePoliceAlert)
     savePoliceAlert(formData);
+    recordSubmit('policeAlert');
 
     // Send to Google Sheets
     console.log('📤 Sending police alert to Google Sheets...');
@@ -945,7 +1007,11 @@ document.getElementById('policeReportForm').addEventListener('submit', async fun
 // Save police alert to localStorage
 function savePoliceAlert(alertData) {
     let alerts = JSON.parse(localStorage.getItem('policeAlerts') || '[]');
-    alerts.push(alertData);
+    // Privacy: strip the reporter's phone number before storing locally. We keep
+    // the alert content and coordinates (needed for the map/feed) but never let
+    // a reporter's personal contact linger on the device.
+    const { reporterContact, ...safeAlert } = alertData;
+    alerts.push(safeAlert);
     // Keep only last 50 alerts
     if (alerts.length > 50) {
         alerts = alerts.slice(-50);
@@ -973,21 +1039,90 @@ function addAlertToFeed(alertData) {
     }
 }
 
+// Escape user-supplied text before inserting into HTML (prevents injection)
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// ---- Alert confirmations (per-device) --------------------------------------
+// A "Confirm sighting" lets people corroborate a report. Counts are stored
+// locally and de-duplicated per device (one confirmation per alert per device).
+function getConfirmCounts() {
+    try { return JSON.parse(localStorage.getItem('june25_alert_confirms') || '{}'); }
+    catch (e) { return {}; }
+}
+function getMyConfirms() {
+    try { return JSON.parse(localStorage.getItem('june25_alert_confirmed') || '[]'); }
+    catch (e) { return []; }
+}
+function formatConfirmCount(c) {
+    if (!c) return 'No confirmations yet';
+    return c === 1 ? '✓ 1 person confirmed' : `✓ ${c} people confirmed`;
+}
+function confirmAlert(id, btn) {
+    const mine = getMyConfirms();
+    if (mine.includes(id)) return; // one confirmation per device
+    const counts = getConfirmCounts();
+    counts[id] = (counts[id] || 0) + 1;
+    localStorage.setItem('june25_alert_confirms', JSON.stringify(counts));
+    mine.push(id);
+    localStorage.setItem('june25_alert_confirmed', JSON.stringify(mine));
+    updateConfirmDisplay(id);
+}
+function updateConfirmDisplay(id) {
+    const counts = getConfirmCounts();
+    const confirmed = getMyConfirms().includes(id);
+    document.querySelectorAll('.alert-confirm-count[data-alert-id="' + id + '"]').forEach(el => {
+        el.textContent = formatConfirmCount(counts[id] || 0);
+    });
+    document.querySelectorAll('.alert-confirm-btn[data-alert-id="' + id + '"]').forEach(b => {
+        if (confirmed) {
+            b.disabled = true;
+            b.textContent = '✓ Confirmed';
+            b.classList.add('confirmed');
+        }
+    });
+}
+// Sync confirmation counts onto any alerts already in the DOM (e.g. demo alerts)
+function initConfirmDisplays() {
+    document.querySelectorAll('[data-alert-id]').forEach(el => {
+        const id = el.getAttribute('data-alert-id');
+        if (id) updateConfirmDisplay(id);
+    });
+}
+
 // Create alert HTML element
 function createAlertElement(alertData) {
     const div = document.createElement('div');
     const alertClass = getAlertClass(alertData.activityType);
     const timeAgo = getTimeAgo(alertData.timestamp);
+    const id = alertData.id || ('POL' + (alertData.timestamp || Date.now()));
+    const counts = getConfirmCounts();
+    const confirmed = getMyConfirms().includes(id);
+    const count = counts[id] || 0;
 
     div.className = `alert-item ${alertClass}`;
+    div.setAttribute('data-alert-id', id);
     div.innerHTML = `
         <div class="alert-header">
-            <span class="alert-type">${formatActivityType(alertData.activityType)}</span>
-            <span class="alert-time">${timeAgo}</span>
+            <span class="alert-type">${escapeHtml(formatActivityType(alertData.activityType))}</span>
+            <span class="alert-time" data-timestamp="${escapeHtml(alertData.timestamp || '')}">🕒 ${timeAgo}</span>
         </div>
-        <div class="alert-location">📍 ${alertData.county} - ${alertData.specificLocation}</div>
+        <div class="alert-location">📍 ${escapeHtml(alertData.county)} - ${escapeHtml(alertData.specificLocation)}</div>
         <div class="alert-details">
-            ${alertData.description || formatAlertDetails(alertData)}
+            ${escapeHtml(alertData.description || formatAlertDetails(alertData))}
+        </div>
+        <div class="alert-confirm-row">
+            <button type="button" class="alert-confirm-btn ${confirmed ? 'confirmed' : ''}" data-alert-id="${id}" onclick="confirmAlert('${id}', this)" ${confirmed ? 'disabled' : ''}>
+                ${confirmed ? '✓ Confirmed' : '✓ Confirm sighting'}
+            </button>
+            <span class="alert-confirm-count" data-alert-id="${id}">${formatConfirmCount(count)}</span>
         </div>
     `;
 
@@ -1090,15 +1225,11 @@ document.getElementById('filterCounty').addEventListener('change', function() {
     });
 });
 
-// Update time ago every minute
+// Update "time ago" labels every minute using each alert's own timestamp
 setInterval(() => {
-    const timeElements = document.querySelectorAll('.alert-time');
-    const alerts = getPoliceAlerts();
-
-    timeElements.forEach((element, index) => {
-        if (alerts[index]) {
-            element.textContent = getTimeAgo(alerts[index].timestamp);
-        }
+    document.querySelectorAll('.alert-time[data-timestamp]').forEach(el => {
+        const ts = el.getAttribute('data-timestamp');
+        if (ts) el.textContent = '🕒 ' + getTimeAgo(ts);
     });
 }, 60000);
 
@@ -1109,6 +1240,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize map
     setTimeout(initializePoliceMap, 200);
+
+    // Apply any saved confirmation counts to alerts already in the DOM
+    setTimeout(initConfirmDisplays, 150);
 });
 
 // ============================================

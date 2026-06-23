@@ -1,0 +1,20 @@
+{
+  "name": "June 25 Peaceful Protest Portal",
+  "short_name": "June 25",
+  "description": "Registration, transport, legal aid and live safety alerts for the June 25 peaceful protest in Kenya.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b3d1f",
+  "theme_color": "#1e7e34",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

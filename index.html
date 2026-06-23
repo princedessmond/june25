@@ -5,6 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>June 25th Peaceful Protest - Kenya</title>
+
+    <!-- Progressive Web App: installable + works offline -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e7e34">
+    <meta name="description" content="Registration, transport, legal aid and live safety alerts for the June 25 peaceful protest in Kenya.">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="June 25">
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -398,6 +408,11 @@
                         </div>
 
                         <form id="policeReportForm" class="main-form">
+                            <!-- Anti-spam honeypot: hidden from humans, must stay empty -->
+                            <div class="hp-field" aria-hidden="true">
+                                <label>Leave this field empty</label>
+                                <input type="text" name="website" tabindex="-1" autocomplete="off">
+                            </div>
                             <div class="form-group">
                                 <label for="alertCounty">County/Location *</label>
                                 <select id="alertCounty" name="alertCounty" required>
@@ -501,31 +516,43 @@
 
                         <div id="alertFeedContainer" class="alert-feed-list">
                             <!-- Demo alerts - will be replaced with real data -->
-                            <div class="alert-item alert-warning">
+                            <div class="alert-item alert-warning" data-alert-id="demo-1">
                                 <div class="alert-header">
                                     <span class="alert-type">Large Deployment</span>
-                                    <span class="alert-time">3 minutes ago</span>
+                                    <span class="alert-time">🕒 3 minutes ago</span>
                                 </div>
                                 <div class="alert-location">📍 Nairobi - Uhuru Park area</div>
                                 <div class="alert-details">Approximately 20-50 officers with 5-10 vehicles spotted near main entrance</div>
+                                <div class="alert-confirm-row">
+                                    <button type="button" class="alert-confirm-btn" data-alert-id="demo-1" onclick="confirmAlert('demo-1', this)">✓ Confirm sighting</button>
+                                    <span class="alert-confirm-count" data-alert-id="demo-1">No confirmations yet</span>
+                                </div>
                             </div>
 
-                            <div class="alert-item alert-info">
+                            <div class="alert-item alert-info" data-alert-id="demo-2">
                                 <div class="alert-header">
                                     <span class="alert-type">Roadblock</span>
-                                    <span class="alert-time">8 minutes ago</span>
+                                    <span class="alert-time">🕒 8 minutes ago</span>
                                 </div>
                                 <div class="alert-location">📍 Nakuru - Kenyatta Avenue</div>
                                 <div class="alert-details">Checkpoint setup checking vehicles heading to CBD</div>
+                                <div class="alert-confirm-row">
+                                    <button type="button" class="alert-confirm-btn" data-alert-id="demo-2" onclick="confirmAlert('demo-2', this)">✓ Confirm sighting</button>
+                                    <span class="alert-confirm-count" data-alert-id="demo-2">No confirmations yet</span>
+                                </div>
                             </div>
 
-                            <div class="alert-item alert-safe">
+                            <div class="alert-item alert-safe" data-alert-id="demo-3">
                                 <div class="alert-header">
                                     <span class="alert-type">Peaceful Monitoring</span>
-                                    <span class="alert-time">15 minutes ago</span>
+                                    <span class="alert-time">🕒 15 minutes ago</span>
                                 </div>
                                 <div class="alert-location">📍 Kisumu - City Center</div>
                                 <div class="alert-details">Small patrol observing from distance, no confrontations</div>
+                                <div class="alert-confirm-row">
+                                    <button type="button" class="alert-confirm-btn" data-alert-id="demo-3" onclick="confirmAlert('demo-3', this)">✓ Confirm sighting</button>
+                                    <span class="alert-confirm-count" data-alert-id="demo-3">No confirmations yet</span>
+                                </div>
                             </div>
                         </div>
 
@@ -582,6 +609,11 @@
 
                 <div class="form-container">
                     <form id="registrationForm" class="main-form">
+                        <!-- Anti-spam honeypot: hidden from humans, must stay empty -->
+                        <div class="hp-field" aria-hidden="true">
+                            <label>Leave this field empty</label>
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         <div class="form-group">
                             <label for="fullName">Name</label>
                             <input type="text" id="fullName" name="fullName">
@@ -711,6 +743,11 @@
                 <div class="form-container">
                     <h3>Request Transport Assistance</h3>
                     <form id="transportForm" class="main-form">
+                        <!-- Anti-spam honeypot: hidden from humans, must stay empty -->
+                        <div class="hp-field" aria-hidden="true">
+                            <label>Leave this field empty</label>
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         <div class="form-group">
                             <label for="transportName">Full Name *</label>
                             <input type="text" id="transportName" name="transportName" required>
@@ -831,6 +868,11 @@
                 <div class="form-container">
                     <h3>Request Legal Assistance</h3>
                     <form id="legalForm" class="main-form">
+                        <!-- Anti-spam honeypot: hidden from humans, must stay empty -->
+                        <div class="hp-field" aria-hidden="true">
+                            <label>Leave this field empty</label>
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         <div class="form-group">
                             <label for="legalName">Full Name *</label>
                             <input type="text" id="legalName" name="legalName" required>
@@ -983,9 +1025,7 @@
                     <p>This movement builds on Kenya's rich history of peaceful mass action - from the independence struggle to the fight for multiparty democracy in the 1990s, to the successful resistance against oppressive taxation in 2024. When united, Kenyan citizens have the power to demand accountability and drive positive change.</p>
 
                     <h3>Contact & Information</h3>
-                    <p>For media inquiries: media@june25kenya.org</p>
-                    <p>For general questions: info@june25kenya.org</p>
-                    <p>Twitter/X: @June25Kenya</p>
+                    <p>Twitter/X: <a href="https://x.com/June25Kenya" target="_blank" rel="noopener noreferrer">@June25Kenya</a></p>
                 </div>
             </div>
         </section>
@@ -999,6 +1039,7 @@
     </footer>
 
     <script src="google-sheets-config.js"></script>
+    <script src="security.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
