@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="June 25 Peaceful Protest">
+  <rect width="512" height="512" rx="96" fill="#1e7e34"/>
+  <!-- Kenya flag accent stripes -->
+  <rect x="0" y="232" width="512" height="16" fill="#000000"/>
+  <rect x="0" y="248" width="512" height="16" fill="#d32f2f"/>
+  <rect x="0" y="264" width="512" height="16" fill="#ffffff"/>
+  <!-- Gold ring -->
+  <circle cx="256" cy="200" r="120" fill="none" stroke="#ffd700" stroke-width="14"/>
+  <!-- Dove of peace -->
+  <text x="256" y="232" font-size="140" text-anchor="middle" fill="#ffffff">🕊️</text>
+  <!-- Label -->
+  <text x="256" y="430" font-family="Inter, Arial, sans-serif" font-size="96" font-weight="700" text-anchor="middle" fill="#ffffff">25</text>
+</svg>
